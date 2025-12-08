@@ -39,6 +39,7 @@ class SimpleReplayBuffer(nn.Module):
         self.n_steps = n_steps
         self.device = device
 
+        device = "cpu"
         self.observations = torch.zeros((n_env, buffer_size, n_obs), device=device, dtype=torch.float)
         self.actions = torch.zeros((n_env, buffer_size, n_act), device=device, dtype=torch.float)
         self.rewards = torch.zeros((n_env, buffer_size), device=device, dtype=torch.float)
@@ -56,12 +57,13 @@ class SimpleReplayBuffer(nn.Module):
         self,
         tensor_dict: TensorDict,
     ):
-        observations = tensor_dict["observations"]
-        actions = tensor_dict["actions"]
-        rewards = tensor_dict["next"]["rewards"]
-        dones = tensor_dict["next"]["dones"]
-        truncations = tensor_dict["next"]["truncations"]
-        next_observations = tensor_dict["next"]["observations"]
+        device = "cpu"
+        observations = tensor_dict["observations"].to(device)
+        actions = tensor_dict["actions"].to(device)
+        rewards = tensor_dict["next"]["rewards"].to(device)
+        dones = tensor_dict["next"]["dones"].to(device)
+        truncations = tensor_dict["next"]["truncations"].to(device)
+        next_observations = tensor_dict["next"]["observations"].to(device)
 
         ptr = self.ptr % self.buffer_size
         self.observations[:, ptr] = observations
@@ -70,8 +72,8 @@ class SimpleReplayBuffer(nn.Module):
         self.dones[:, ptr] = dones
         self.truncations[:, ptr] = truncations
         self.next_observations[:, ptr] = next_observations
-        critic_observations = tensor_dict["critic_observations"]
-        next_critic_observations = tensor_dict["next"]["critic_observations"]
+        critic_observations = tensor_dict["critic_observations"].to(device)
+        next_critic_observations = tensor_dict["next"]["critic_observations"].to(device)
         # Store full critic observations
         self.critic_observations[:, ptr] = critic_observations
         self.next_critic_observations[:, ptr] = next_critic_observations
@@ -86,7 +88,7 @@ class SimpleReplayBuffer(nn.Module):
                 0,
                 min(self.buffer_size, self.ptr),
                 (self.n_env, batch_size),
-                device=self.device,
+                device="cpu",
             )
             obs_indices = indices.unsqueeze(-1).expand(-1, -1, self.n_obs)
             act_indices = indices.unsqueeze(-1).expand(-1, -1, self.n_act)
@@ -221,20 +223,20 @@ class SimpleReplayBuffer(nn.Module):
 
         out = TensorDict(
             {
-                "observations": observations,
-                "actions": actions,
+                "observations": observations.to(self.device),
+                "actions": actions.to(self.device),
                 "next": {
-                    "rewards": rewards,
-                    "dones": dones,
-                    "truncations": truncations,
-                    "observations": next_observations,
-                    "effective_n_steps": effective_n_steps,
+                    "rewards": rewards.to(self.device),
+                    "dones": dones.to(self.device),
+                    "truncations": truncations.to(self.device),
+                    "observations": next_observations.to(self.device),
+                    "effective_n_steps": effective_n_steps.to(self.device),
                 },
             },
             batch_size=self.n_env * batch_size,
         )
-        out["critic_observations"] = critic_observations
-        out["next"]["critic_observations"] = next_critic_observations
+        out["critic_observations"] = critic_observations.to(self.device)
+        out["next"]["critic_observations"] = next_critic_observations.to(self.device)
 
         if self.n_steps > 1 and self.ptr >= self.buffer_size:
             # Roll back the truncation flags introduced for safe sampling

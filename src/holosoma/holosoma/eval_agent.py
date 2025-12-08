@@ -5,6 +5,15 @@ import os
 import tyro
 from loguru import logger
 
+import sys
+import os.path as osp
+root = osp.abspath(osp.join(osp.dirname(__file__), "../../.."))
+os.chdir(root)
+python_root = osp.join(root, "src/holosoma")
+if python_root not in sys.path:
+    sys.path.insert(0, python_root)
+
+
 from holosoma.agents.base_algo.base_algo import BaseAlgo
 from holosoma.config_types.experiment import ExperimentConfig
 from holosoma.utils.config_utils import CONFIG_NAME

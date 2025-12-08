@@ -22,7 +22,7 @@ source scripts/source_isaacgym_setup.sh
 python src/holosoma/holosoma/train_agent.py \
     exp:g1-29dof-fast-sac \
     simulator:isaacgym \
-    logger:wandb \
+    logger:disabled \
     --training.seed 1
 
 # T1 with PPO on IsaacSim

@@ -647,7 +647,7 @@ class FastSACAgent(BaseAlgo):
     def learn(self) -> None:
         args = self.config
         device = self.device
-        if args.compile:
+        if False:   #args.compile:
             update_main = torch.compile(self._update_main)
             update_pol = torch.compile(self._update_pol)
             policy = torch.compile(self.policy)

@@ -12,6 +12,14 @@ from typing import Any, TypedDict, cast
 import tyro
 from loguru import logger
 
+import os.path as osp
+root = osp.abspath(osp.join(osp.dirname(__file__), "../../.."))
+os.chdir(root)
+python_root = osp.join(root, "src/holosoma")
+if python_root not in sys.path:
+    sys.path.insert(0, python_root)
+
+
 from holosoma.config_types.env import get_tyro_env_config
 from holosoma.config_types.experiment import ExperimentConfig
 from holosoma.config_values.experiment import AnnotatedExperimentConfig
@@ -154,164 +162,160 @@ def train(tyro_config: ExperimentConfig, training_context: TrainingContext | Non
         simulation_app = init_sim_imports(tyro_config)
         auto_close = True
 
-    try:
-        # have to import torch after isaacgym
-        import torch  # noqa: F401
-        import torch.distributed as dist
-        import wandb
+    # have to import torch after isaacgym
+    import torch  # noqa: F401
+    import torch.distributed as dist
+    import wandb
 
-        from holosoma.agents.base_algo.base_algo import BaseAlgo
-        from holosoma.utils.common import seeding
+    from holosoma.agents.base_algo.base_algo import BaseAlgo
+    from holosoma.utils.common import seeding
 
-        # unresolved_conf = dataclasses.asdict(tyro_config)
-        # import ipdb; ipdb.set_trace()
+    # unresolved_conf = dataclasses.asdict(tyro_config)
+    # import ipdb; ipdb.set_trace()
 
-        # Initialize process group
-        distributed_conf: MultGPUConfig | None = configure_multi_gpu()
-        device: str = get_device(tyro_config, distributed_conf)
-        is_distributed = distributed_conf is not None
-        is_main_process = distributed_conf is None or distributed_conf["local_rank"] == 0
+    # Initialize process group
+    distributed_conf: MultGPUConfig | None = configure_multi_gpu()
+    device: str = get_device(tyro_config, distributed_conf)
+    is_distributed = distributed_conf is not None
+    is_main_process = distributed_conf is None or distributed_conf["local_rank"] == 0
 
-        # Configure logger
-        logger_cfg = tyro_config.logger
-        wandb_enabled = logger_cfg.type == "wandb"
+    # Configure logger
+    logger_cfg = tyro_config.logger
+    wandb_enabled = logger_cfg.type == "wandb"
 
-        # Compute experiment directory from logger and training config
-        from holosoma.utils.experiment_paths import get_experiment_dir, get_timestamp
+    # Compute experiment directory from logger and training config
+    from holosoma.utils.experiment_paths import get_experiment_dir, get_timestamp
 
-        timestamp = get_timestamp()
-        experiment_dir = get_experiment_dir(logger_cfg, tyro_config.training, timestamp, task_name="locomotion")
+    timestamp = get_timestamp()
+    experiment_dir = get_experiment_dir(logger_cfg, tyro_config.training, timestamp, task_name="locomotion")
 
-        # Configure logging with experiment directory
-        configure_logging(distributed_conf=distributed_conf, log_dir=experiment_dir)
+    # Configure logging with experiment directory
+    configure_logging(distributed_conf=distributed_conf, log_dir=experiment_dir)
 
-        # Random seed
-        seed = tyro_config.training.seed
-        if distributed_conf is not None:
-            seed += distributed_conf["global_rank"]
-        seeding(seed, torch_deterministic=tyro_config.training.torch_deterministic)
+    # Random seed
+    seed = tyro_config.training.seed
+    if distributed_conf is not None:
+        seed += distributed_conf["global_rank"]
+    seeding(seed, torch_deterministic=tyro_config.training.torch_deterministic)
 
-        wandb_run_path: str | None = None
+    wandb_run_path: str | None = None
 
-        # Configure wandb in rank 0
-        if wandb_enabled and is_main_process:
-            from holosoma.config_types.logger import WandbLoggerConfig
+    # Configure wandb in rank 0
+    if wandb_enabled and is_main_process:
+        from holosoma.config_types.logger import WandbLoggerConfig
 
-            assert isinstance(logger_cfg, WandbLoggerConfig), (
-                "Logger config must be WandbLoggerConfig when type is wandb"
-            )
-            wandb_cfg = logger_cfg
-            # Use training config for project/name, fallback to logger config, then defaults
-            default_project = tyro_config.training.project or wandb_cfg.project or "default_project"
-            default_run_name = (
-                f"{timestamp}_{tyro_config.training.name or 'run'}_"
-                f"{wandb_cfg.group or 'default'}_{tyro_config.robot.asset.robot_type}"
-            )
-            wandb_dir = Path(wandb_cfg.dir or (experiment_dir / ".wandb"))
-            wandb_dir.mkdir(exist_ok=True, parents=True)
-            logger.info(f"Saving wandb logs to {wandb_dir}")
-
-            # Only pass optional parameters when specified so wandb can fall back to environment defaults.
-            wandb_kwargs: dict[str, Any] = {
-                "project": wandb_cfg.project or default_project,
-                "name": wandb_cfg.name or default_run_name,
-                "config": dataclasses.asdict(tyro_config),
-                "dir": str(wandb_dir),
-                "mode": wandb_cfg.mode,
-            }
-            if wandb_cfg.entity:
-                wandb_kwargs["entity"] = wandb_cfg.entity
-            if wandb_cfg.group:
-                wandb_kwargs["group"] = wandb_cfg.group
-            if wandb_cfg.id:
-                wandb_kwargs["id"] = wandb_cfg.id
-            if wandb_cfg.tags:
-                wandb_kwargs["tags"] = list(wandb_cfg.tags)
-            if wandb_cfg.resume is not None:
-                wandb_kwargs["resume"] = wandb_cfg.resume
-
-            wandb.init(**wandb_kwargs)
-            if wandb.run is not None:
-                wandb_run_path = f"{wandb.run.entity}/{wandb.run.project}/{wandb.run.id}"
-
-        # Distribute environments across GPUs for proper multi-GPU training
-        if distributed_conf is not None:
-            original_num_envs = tyro_config.training.num_envs
-            num_envs = original_num_envs // distributed_conf["world_size"]
-            tyro_config = dataclasses.replace(
-                tyro_config, training=dataclasses.replace(tyro_config.training, num_envs=num_envs)
-            )
-            logger.info(
-                f"Distributed training: GPU {distributed_conf['global_rank']} will run {tyro_config.training.num_envs} "
-                f"environments (total across all GPUs: {original_num_envs})"
-            )
-
-        env_target = tyro_config.env_class
-
-        tyro_env_config = get_tyro_env_config(tyro_config)
-        env = get_class(env_target)(tyro_env_config, device=device)
-
-        # For manager system, pre-process config AFTER env creation
-        # (need managers to compute dims)
-        observation_manager = getattr(env, "observation_manager", None)
-        if observation_manager is None:
-            raise RuntimeError(
-                f"Manager environment {env_target} is missing observation_manager attribute. "
-                "This should not happen if the environment is properly configured."
-            )
-
-        experiment_save_dir = experiment_dir
-        experiment_save_dir.mkdir(exist_ok=True, parents=True)
-
-        if is_main_process:
-            logger.info(f"Saving config file to {experiment_save_dir}")
-            config_path = experiment_save_dir / CONFIG_NAME
-            tyro_config.save_config(str(config_path))
-            if wandb_enabled:
-                wandb.save(str(config_path), base_path=experiment_save_dir)
-
-        algo_class = get_class(tyro_config.algo._target_)
-        algo: BaseAlgo = algo_class(
-            device=device,
-            env=env,
-            config=tyro_config.algo.config,
-            log_dir=experiment_save_dir,
-            multi_gpu_cfg=distributed_conf,
+        assert isinstance(logger_cfg, WandbLoggerConfig), (
+            "Logger config must be WandbLoggerConfig when type is wandb"
         )
-        algo.setup()
-        algo.attach_checkpoint_metadata(tyro_config, wandb_run_path)
-        if tyro_config.training.checkpoint is not None:
-            loaded_checkpoint = load_checkpoint(tyro_config.training.checkpoint, str(experiment_save_dir))
-            tyro_config = dataclasses.replace(
-                tyro_config, training=dataclasses.replace(tyro_config.training, checkpoint=str(loaded_checkpoint))
-            )
-            algo.load(loaded_checkpoint)
+        wandb_cfg = logger_cfg
+        # Use training config for project/name, fallback to logger config, then defaults
+        default_project = tyro_config.training.project or wandb_cfg.project or "default_project"
+        default_run_name = (
+            f"{timestamp}_{tyro_config.training.name or 'run'}_"
+            f"{wandb_cfg.group or 'default'}_{tyro_config.robot.asset.robot_type}"
+        )
+        wandb_dir = Path(wandb_cfg.dir or (experiment_dir / ".wandb"))
+        wandb_dir.mkdir(exist_ok=True, parents=True)
+        logger.info(f"Saving wandb logs to {wandb_dir}")
 
-        # handle saving config
-        algo.learn()
+        # Only pass optional parameters when specified so wandb can fall back to environment defaults.
+        wandb_kwargs: dict[str, Any] = {
+            "project": wandb_cfg.project or default_project,
+            "name": wandb_cfg.name or default_run_name,
+            "config": dataclasses.asdict(tyro_config),
+            "dir": str(wandb_dir),
+            "mode": wandb_cfg.mode,
+        }
+        if wandb_cfg.entity:
+            wandb_kwargs["entity"] = wandb_cfg.entity
+        if wandb_cfg.group:
+            wandb_kwargs["group"] = wandb_cfg.group
+        if wandb_cfg.id:
+            wandb_kwargs["id"] = wandb_cfg.id
+        if wandb_cfg.tags:
+            wandb_kwargs["tags"] = list(wandb_cfg.tags)
+        if wandb_cfg.resume is not None:
+            wandb_kwargs["resume"] = wandb_cfg.resume
 
-        # teardown wandb before SimApp closes ungracefully (IsaacLab)
-        if is_main_process and wandb_enabled:
-            logger.info("Shutting down wandb...")
-            wandb.teardown()
+        wandb.init(**wandb_kwargs)
+        if wandb.run is not None:
+            wandb_run_path = f"{wandb.run.entity}/{wandb.run.project}/{wandb.run.id}"
 
-        # shutdown dist before SimApp closes ungracefully (IsaacLab)
-        if is_distributed:
-            logger.info("Shutting down distributed processes...")
-            dist.destroy_process_group()
-    except Exception as e:
-        tb_str = traceback.format_exc()
-        logger.error(f"Exception occurred during training: {e}\n{tb_str}")
-        sys.exit(1)  # manually set exit code, not possible via isaacsim app.close()
-    finally:
-        if auto_close:
-            close_simulation_app(simulation_app)
+    # Distribute environments across GPUs for proper multi-GPU training
+    if distributed_conf is not None:
+        original_num_envs = tyro_config.training.num_envs
+        num_envs = original_num_envs // distributed_conf["world_size"]
+        tyro_config = dataclasses.replace(
+            tyro_config, training=dataclasses.replace(tyro_config.training, num_envs=num_envs)
+        )
+        logger.info(
+            f"Distributed training: GPU {distributed_conf['global_rank']} will run {tyro_config.training.num_envs} "
+            f"environments (total across all GPUs: {original_num_envs})"
+        )
+
+    env_target = tyro_config.env_class
+
+    tyro_env_config = get_tyro_env_config(tyro_config)
+    env = get_class(env_target)(tyro_env_config, device=device)
+
+    # For manager system, pre-process config AFTER env creation
+    # (need managers to compute dims)
+    observation_manager = getattr(env, "observation_manager", None)
+    if observation_manager is None:
+        raise RuntimeError(
+            f"Manager environment {env_target} is missing observation_manager attribute. "
+            "This should not happen if the environment is properly configured."
+        )
+
+    experiment_save_dir = experiment_dir
+    experiment_save_dir.mkdir(exist_ok=True, parents=True)
+
+    if is_main_process:
+        logger.info(f"Saving config file to {experiment_save_dir}")
+        config_path = experiment_save_dir / CONFIG_NAME
+        tyro_config.save_config(str(config_path))
+        if wandb_enabled:
+            wandb.save(str(config_path), base_path=experiment_save_dir)
+
+    algo_class = get_class(tyro_config.algo._target_)
+    algo: BaseAlgo = algo_class(
+        device=device,
+        env=env,
+        config=tyro_config.algo.config,
+        log_dir=experiment_save_dir,
+        multi_gpu_cfg=distributed_conf,
+    )
+    algo.setup()
+    algo.attach_checkpoint_metadata(tyro_config, wandb_run_path)
+    if tyro_config.training.checkpoint is not None:
+        loaded_checkpoint = load_checkpoint(tyro_config.training.checkpoint, str(experiment_save_dir))
+        tyro_config = dataclasses.replace(
+            tyro_config, training=dataclasses.replace(tyro_config.training, checkpoint=str(loaded_checkpoint))
+        )
+        algo.load(loaded_checkpoint)
+
+    # handle saving config
+    algo.learn()
+
+    # teardown wandb before SimApp closes ungracefully (IsaacLab)
+    if is_main_process and wandb_enabled:
+        logger.info("Shutting down wandb...")
+        wandb.teardown()
+
+    # shutdown dist before SimApp closes ungracefully (IsaacLab)
+    if is_distributed:
+        logger.info("Shutting down distributed processes...")
+        dist.destroy_process_group()
+
+    if auto_close:
+        close_simulation_app(simulation_app)
 
     logger.info("Training shutdown complete.")
 
 
 def main() -> None:
-    tyro_cfg = tyro.cli(AnnotatedExperimentConfig, config=TYRO_CONIFG)
+    import tyro_cli
+    tyro_cfg = tyro_cli.cli(AnnotatedExperimentConfig, config=TYRO_CONIFG)
     print(tyro_cfg.curriculum)
     train(tyro_cfg)
 
