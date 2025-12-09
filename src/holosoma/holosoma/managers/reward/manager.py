@@ -148,6 +148,8 @@ class RewardManager:
         # Reset computation
         self._reward_buf[:] = 0.0
 
+        self._reward_raw_step = {}
+        self._reward_scaled_step = {}
         # Iterate over all reward terms
         for term_name, term_cfg in zip(self._term_names, self._term_cfgs):
             # Compute raw reward value
@@ -176,6 +178,8 @@ class RewardManager:
             # Track episodic sums
             self._episode_sums[term_name] += rew_scaled
             self._episode_sums_raw[term_name] += rew_raw
+            self._reward_raw_step[term_name] = rew_raw[0].cpu().item()
+            self._reward_scaled_step[term_name] = rew_scaled[0].cpu().item()
 
         # Optionally clip to positive
         if self.cfg.only_positive_rewards:

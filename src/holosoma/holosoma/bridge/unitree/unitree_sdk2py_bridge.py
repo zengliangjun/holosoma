@@ -9,7 +9,7 @@ from holosoma.bridge.base.basic_sdk2py_bridge import BasicSdk2Bridge
 class UnitreeSdk2Bridge(BasicSdk2Bridge):
     """Unitree SDK2Py bridge implementation."""
 
-    SUPPORTED_ROBOT_TYPES = {"g1_29dof", "h1", "h1-2", "go2_12dof"}
+    SUPPORTED_ROBOT_TYPES = {"g1_23dof", "g1_29dof", "h1", "h1-2", "go2_12dof"}
 
     def _init_sdk_components(self):
         """Initialize Unitree SDK-specific components."""
@@ -33,7 +33,7 @@ class UnitreeSdk2Bridge(BasicSdk2Bridge):
             raise ValueError(f"Invalid robot type '{robot_type}'. Unitree SDK supports: {self.SUPPORTED_ROBOT_TYPES}")
 
         # Initialize based on robot type
-        if robot_type in {"g1_29dof"} or "h1-2" in robot_type:
+        if robot_type in {"g1_23dof", "g1_29dof"} or "h1-2" in robot_type:
             from unitree_sdk2py.idl.default import unitree_hg_msg_dds__LowCmd_  # noqa: PLC0415
             from unitree_sdk2py.idl.default import unitree_hg_msg_dds__LowState_ as LowState_default  # noqa: PLC0415
             from unitree_sdk2py.idl.unitree_hg.msg.dds_ import LowCmd_, LowState_  # noqa: PLC0415

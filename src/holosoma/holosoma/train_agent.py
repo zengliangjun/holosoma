@@ -314,9 +314,17 @@ def train(tyro_config: ExperimentConfig, training_context: TrainingContext | Non
 
 
 def main() -> None:
+    import sys
+    sys.argv += ['exp:g1-23dof-fast-sac-v1', \
+                 'simulator:isaacgym', \
+                 'logger:disabled', \
+                 '--training.seed', '1' # ] #, \
+                 #'--training.checkpoint', \
+                 #'logs/hv-g1-manager/20251209_033627-g1_23dof_fast_sac_manager-locomotion/model_0050000.pt'
+                ]
+
     import tyro_cli
     tyro_cfg = tyro_cli.cli(AnnotatedExperimentConfig, config=TYRO_CONIFG)
-    print(tyro_cfg.curriculum)
     train(tyro_cfg)
 
 

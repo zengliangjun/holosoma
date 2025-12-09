@@ -16,6 +16,14 @@ import traceback
 import tyro
 from loguru import logger
 
+import os
+import os.path as osp
+root = osp.abspath(osp.join(osp.dirname(__file__), "../../.."))
+os.chdir(root)
+python_root = osp.join(root, "src/holosoma_inference")
+if python_root not in sys.path:
+    sys.path.insert(0, python_root)
+
 from holosoma_inference.config.config_types.inference import InferenceConfig
 from holosoma_inference.config.config_values.inference import AnnotatedInferenceConfig
 from holosoma_inference.config.utils import TYRO_CONFIG

@@ -12,6 +12,13 @@ import traceback
 
 import tyro
 from loguru import logger
+import os
+import os.path as osp
+root = osp.abspath(osp.join(osp.dirname(__file__), "../../.."))
+os.chdir(root)
+python_root = osp.join(root, "src/holosoma")
+if python_root not in sys.path:
+    sys.path.insert(0, python_root)
 
 from holosoma.config_types.run_sim import RunSimConfig
 from holosoma.utils.eval_utils import init_eval_logging
@@ -47,23 +54,26 @@ def run_simulation(config: RunSimConfig):
     logger.info(f"Simulator: {config.simulator._target_}")
     logger.info(f"Terrain: {config.terrain.terrain_term.mesh_type} ({config.terrain.terrain_term.func})")
 
-    try:
-        # Use shared utils for setup
-        env, device, simulation_app = setup_simulation_environment(config, device=config.device)
+    #try:
+    # Use shared utils for setup
+    env, device, simulation_app = setup_simulation_environment(config, device=config.device)
 
-        # Create and run direct simulation using context manager for automatic clean-up
-        with DirectSimulation(config, env, device, simulation_app) as sim:
-            sim.run()
+    # Create and run direct simulation using context manager for automatic clean-up
+    with DirectSimulation(config, env, device, simulation_app) as sim:
+        sim.run()
 
-    except Exception as e:
-        logger.error(f"Error during simulation: {e}")
-        traceback.print_exc()
-        sys.exit(1)
+    #except Exception as e:
+    #    logger.error(f"Error during simulation: {e}")
+    #    traceback.print_exc()
+    #    sys.exit(1)
 
 
 def main() -> None:
     """Main function using tyro configuration with compositional subcommands."""
     # Initialize logging
+    import sys
+    sys.argv += ['robot:g1-23dof', 'terrain:terrain_locomotion_plane']
+    print(sys.argv)
     init_eval_logging()
 
     logger.info("Holosoma Direct Simulation Runner")

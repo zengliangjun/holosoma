@@ -119,6 +119,11 @@ python3 src/holosoma_inference/holosoma_inference/run_policy.py inference:t1-29d
     --task.model-path src/holosoma_inference/holosoma_inference/models/loco/t1_29dof/ppo_t1_29dof.onnx \
     --task.no-use-joystick \
     --task.interface lo
+
+python3 src/holosoma_inference/holosoma_inference/run_policy.py inference:g1-23dof-loco \
+    --task.model-path logs/hv-g1-manager/20251209_033627-g1_23dof_fast_sac_manager-locomotion/model_0050000.onnx \
+    --task.no-use-joystick \
+    --task.interface lo
 ```
 
 **For joystick control:**

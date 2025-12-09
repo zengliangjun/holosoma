@@ -998,11 +998,65 @@ class FastSACAgent(BaseAlgo):
             if self.obs_normalization:
                 self.obs_normalizer.train()
 
+    def export_jit(self, jit_file_path: str) -> None:
+        """Export the `.onnx` of the policy to & save it to `path`.
+
+        This is intended to enable deployment, but not resuming training.
+        For storing checkpoints to resume training, see `FastSACAgent.save()`
+        """
+        # Save current training state
+        was_training = self.actor.training
+
+        # Set model to evaluation mode for export so we don't affect gradients mid-rollout
+        self.actor.eval()
+        if self.obs_normalization:
+            self.obs_normalizer.eval()
+
+        # Create dummy all-zero input for ONNX tracing.
+        example_input_list = torch.zeros(1, self.actor_obs_dim, device="cpu")
+
+        motion_command = self.unwrapped_env.command_manager.get_state("motion_command")
+        if motion_command is not None:
+            pass
+        else:
+            traced_script_module = torch.jit.script(self.actor_onnx_wrapper)
+            traced_script_module.save(jit_file_path)
+
+        # Extract control gains and velocity limits & attach to onnx as metadata
+        kp_list, kd_list = get_control_gains_from_config(self.env.robot_config)
+        cmd_ranges = get_command_ranges_from_env(self.unwrapped_env)
+        # Extract URDF text from the robot config
+        urdf_file_path, urdf_str = get_urdf_text_from_robot_config(self.env.robot_config)
+
+        metadata = {
+            "dof_names": self.env.robot_config.dof_names,
+            "kp": kp_list,
+            "kd": kd_list,
+            "command_ranges": cmd_ranges,
+            "robot_urdf": urdf_str,
+            "robot_urdf_path": urdf_file_path,
+        }
+        metadata.update(self._checkpoint_metadata(iteration=self.global_step))
+
+        '''
+        attach_onnx_metadata(
+            onnx_path=onnx_file_path,
+            metadata=metadata,
+        )
+
+        self.logging_helper.save_to_wandb(onnx_file_path)
+        '''
+        # Restore original training state
+        if was_training:
+            self.actor.train()
+            if self.obs_normalization:
+                self.obs_normalizer.train()
+
     @torch.no_grad()
     def evaluate_policy(self, max_eval_steps: int | None = None):
         obs = self.env.reset()
 
-        for _ in itertools.islice(itertools.count(), max_eval_steps):
+        for step in itertools.islice(itertools.count(), max_eval_steps):
             if self.obs_normalization:
                 normalized_obs = self.obs_normalizer(obs, update=False)
             else:
@@ -1010,3 +1064,39 @@ class FastSACAgent(BaseAlgo):
             # Actions are already scaled by the actor
             actions = self.actor(normalized_obs)[0]
             obs, _, _, _ = self.env.step(actions)
+
+            # TEST
+            loss_dict = {}
+            for key, value in self.env._env.reward_manager._reward_raw_step.items():
+                if isinstance(value, torch.Tensor):
+                    loss_dict[f'raw_{key}'] = value.item()
+                else:
+                    loss_dict[f'raw_{key}'] = float(value)
+
+            extra_log_dicts = {}
+            for key, value in self.env._env.reward_manager._reward_scaled_step.items():
+                if isinstance(value, torch.Tensor):
+                    extra_log_dicts[f'scaled_{key}'] = value.item()
+                else:
+                    extra_log_dicts[f'scaled_{key}'] = float(value)
+
+            # Use logging helper
+            log_string = self.logging_helper._create_console_output(
+                                        it=step,
+                                        loss_dict=loss_dict,
+                                        env_log_dict=extra_log_dicts,
+                                        extra_log_dicts={},
+                                        ep_string="\n\n",
+                                        width=80,
+                                        pad=30,
+                                        iteration_time=0,
+                                        fps=0,
+                                    )
+
+            # Use rich Live to update console
+            from rich.live import Live
+            from rich.panel import Panel
+            from holosoma.agents.modules import logging_utils
+
+            with Live(Panel(log_string), refresh_per_second=4, console=logging_utils.console):
+                pass

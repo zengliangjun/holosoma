@@ -80,6 +80,9 @@ def run_eval_with_tyro(
         algo.export(onnx_file_path=exported_onnx_path)  # type: ignore[attr-defined]
         logger.info(f"Exported policy as onnx to: {exported_onnx_path}")
 
+    jit_file_path = os.path.join(exported_policy_dir_path, exported_policy_name)
+    algo.export_jit(jit_file_path=jit_file_path)
+
     algo.evaluate_policy(
         max_eval_steps=tyro_config.training.max_eval_steps,
     )
@@ -90,6 +93,7 @@ def run_eval_with_tyro(
 
 
 def main() -> None:
+    sys.argv += ["--checkpoint=logs/hv-g1-manager/20251209_033627-g1_23dof_fast_sac_manager-locomotion/model_0050000.pt"]
     init_eval_logging()
     checkpoint_cfg, remaining_args = tyro.cli(CheckpointConfig, return_unknown_args=True, add_help=False)
     saved_cfg, saved_wandb_path = load_saved_experiment_config(checkpoint_cfg)
@@ -101,7 +105,6 @@ def main() -> None:
         description="Overriding config on top of what's loaded.",
         config=TYRO_CONIFG,
     )
-    print("overwritten_tyro_config: ", overwritten_tyro_config)
     run_eval_with_tyro(overwritten_tyro_config, checkpoint_cfg, saved_cfg, saved_wandb_path)
 
 
