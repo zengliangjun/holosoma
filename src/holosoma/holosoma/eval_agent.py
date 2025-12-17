@@ -93,7 +93,9 @@ def run_eval_with_tyro(
 
 
 def main() -> None:
-    sys.argv += ["--checkpoint=logs/hv-g1-manager/20251209_033627-g1_23dof_fast_sac_manager-locomotion/model_0050000.pt"]
+    #sys.argv += ["--checkpoint=logs/hv-g1-manager/20251209_033627-g1_23dof_fast_sac_manager-locomotion/model_0050000.pt"]
+    # sys.argv += ["--checkpoint=logs/hv-g1-manager/20251211_150328-g1_23dof_fast_sac_manager_v1-locomotion/model_0040000.pt"]
+    sys.argv += ["--checkpoint=logs/hv-g1-manager/20251212_051648-g1_23dof_fast_sac_manager_v1-locomotion/model_0050000.pt"]
     init_eval_logging()
     checkpoint_cfg, remaining_args = tyro.cli(CheckpointConfig, return_unknown_args=True, add_help=False)
     saved_cfg, saved_wandb_path = load_saved_experiment_config(checkpoint_cfg)

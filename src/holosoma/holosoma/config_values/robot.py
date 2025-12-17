@@ -1104,10 +1104,13 @@ g1_29dof_w_object = replace(
     ),
 )
 
-from holosoma.config_values.robot_g123 import g1_23dof
+from holosoma.config_values.robot_g123 import g1_23dof, \
+    unitree_rl_init_g1_23dof
+
 
 DEFAULTS = {
     "g1_23dof": g1_23dof,
+    "unitree_rl_init_g1_23dof": unitree_rl_init_g1_23dof,
     "g1_29dof": g1_29dof,
     "t1_29dof_waist_wrist": t1_29dof_waist_wrist,
     "g1_29dof_w_object": g1_29dof_w_object,
