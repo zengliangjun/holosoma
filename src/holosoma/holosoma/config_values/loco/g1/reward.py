@@ -359,9 +359,10 @@ g1_23dof_loco_fast_sac_v1 = RewardManagerCfg(
             tags=["penalty_curriculum"],
         ),
         "penalty_feet_contact_forces": RewardTermCfg(
-            func="holosoma.managers.reward.terms.locomotion_ext:penalty_feet_contact_forces",
-            weight=-0.001,
-            params={"force_threshold": 600.0},
+            func="holosoma.managers.reward.terms.locomotion_ext:penalty_feet_contact_forces_v1",
+            weight=-0.005,
+            params={"force_threshold": 500,
+                    "max_force": 400},
             tags=["penalty_curriculum"],
         ),
         "penalty_close_feet_xy": RewardTermCfg(

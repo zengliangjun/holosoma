@@ -64,3 +64,18 @@ def penalty_feet_contact_forces(env, force_threshold: float = 450) -> torch.Tens
     forces = torch.abs(env.simulator.contact_forces[:, env.feet_indices, 2])
     forces = torch.clamp_min(forces - force_threshold, min=0)
     return torch.sum(forces, dim=1)
+
+
+def penalty_feet_contact_forces_v1(env, force_threshold: float = 450, max_force: float = 400) -> torch.Tensor:
+    """Penalize feet hitting vertical surfaces.
+
+    Args:
+        env: The environment instance
+
+    Returns:
+        Reward tensor [num_envs]
+    """
+    forces = torch.abs(env.simulator.contact_forces[:, env.feet_indices, 2])
+    _reward = torch.clamp(forces - force_threshold, min=0, max=max_force)
+    _reward = torch.max(_reward, dim=1)[0]
+    return _reward
