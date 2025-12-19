@@ -71,9 +71,9 @@ def run_simulation(config: RunSimConfig):
 def main() -> None:
     """Main function using tyro configuration with compositional subcommands."""
     # Initialize logging
-    import sys
-    sys.argv += ['robot:g1-23dof', 'terrain:terrain_locomotion_plane']
-    print(sys.argv)
+    #import sys
+    #sys.argv += ['robot:g1-23dof', 'terrain:terrain_locomotion_plane']
+    #print(sys.argv)
     init_eval_logging()
 
     logger.info("Holosoma Direct Simulation Runner")

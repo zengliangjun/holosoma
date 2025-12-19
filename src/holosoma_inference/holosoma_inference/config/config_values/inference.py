@@ -20,7 +20,13 @@ g1_29dof_loco = InferenceConfig(
 # G1 Locomotion
 g1_23dof_loco = InferenceConfig(
     robot=robot.g1_23dof,
-    observation=observation.loco_g1_29dof,
+    observation=observation.loco_g1_23dof,
+    task=task.locomotion,
+)
+
+rllab_init_g1_23dof_loco = InferenceConfig(
+    robot=robot.unitree_rl_init_g1_23dof,
+    observation=observation.loco_g1_23dof,
     task=task.locomotion,
 )
 
@@ -63,6 +69,7 @@ g1_29dof_wbt = InferenceConfig(
 
 DEFAULTS = {
     "g1-23dof-loco": g1_23dof_loco,
+    "rllab-init-g1-23dof-loco": rllab_init_g1_23dof_loco,
     "g1-29dof-loco": g1_29dof_loco,
     "t1-29dof-loco": t1_29dof_loco,
     "g1-29dof-wbt": g1_29dof_wbt,

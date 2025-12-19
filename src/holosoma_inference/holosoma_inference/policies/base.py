@@ -802,7 +802,7 @@ class BasePolicy:
 
                 self.latency_tracker.end_cycle()
 
-                if it % 50 == 0 and self.use_policy_action:
+                if it % 50000 == 0 and self.use_policy_action:
                     debug_str = f"RL FPS: {self.latency_tracker.get_fps():.2f} | {self.latency_tracker.get_stats_str()}"
                     self.logger.info(debug_str, flush=True)
 

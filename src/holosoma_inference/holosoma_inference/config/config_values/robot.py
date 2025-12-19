@@ -254,10 +254,11 @@ t1_29dof = RobotConfig(
 # Default Configurations Dictionary
 # =============================================================================
 
-from holosoma_inference.config.config_values.robot_23 import g1_23dof
+from holosoma_inference.config.config_values.robot_23 import g1_23dof, unitree_rl_init_g1_23dof
 
 DEFAULTS = {
     "g1_23dof": g1_23dof,
+    "unitree_rl_init_g1_23dof": unitree_rl_init_g1_23dof,
     "g1-29dof": g1_29dof,
     "t1-29dof": t1_29dof,
 }

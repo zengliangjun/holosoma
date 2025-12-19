@@ -1,5 +1,6 @@
 
 from __future__ import annotations
+import dataclasses
 
 from holosoma_inference.config.config_types.robot import RobotConfig
 
@@ -134,6 +135,21 @@ g1_23dof = RobotConfig(
     #    "right_shoulder_yaw_joint": 24, "right_elbow_joint": 25,
     #    "right_wrist_roll_joint": 26, "right_wrist_pitch_joint": 27, "right_wrist_yaw_joint": 28,
     #},
-    motion={"body_name_ref": ["waist_yaw_link"]},
+    motion={"body_name_ref": ["torso_link"]},
 )
 
+
+g1_23dof_dict = dataclasses.asdict(g1_23dof)
+
+g1_23dof_dict.update({
+    "robot_type": "rllab_init_g1_23dof",
+    "default_dof_angles": [
+        -0.1, 0.0, 0.0, 0.3, -0.2, 0.0,  # left leg
+        -0.1, 0.0, 0.0, 0.3, -0.2, 0.0,  # right leg
+        0.0, #0.0, 0.0,  # waist
+        0.3,  0.25, 0.0, 0.97, 0.15, #0.0, 0.0,  # left arm
+        0.3, -0.25, 0.0, 0.97, 0.15, #0.0, 0.0,  # right arm
+    ]
+    })
+
+unitree_rl_init_g1_23dof = RobotConfig(**g1_23dof_dict)

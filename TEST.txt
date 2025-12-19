@@ -1,0 +1,43 @@
+
+#########################################
+
+ General Controls:
+   ]  - Start the policy
+   o  - Stop the policy
+   i  - Set robot to default pose
+
+ Locomotion Controls:
+   =          - Switch walking/standing mode
+   w/s        - Increase/decrease forward velocity
+   a/d        - Increase/decrease lateral velocity
+   q/e        - Increase/decrease angular velocity (turn left/right)
+   z          - Set all velocities to zero
+
+ 🎬 MuJoCo Simulator Controls (⚠️  ONLY in MuJoCo window, NOT this terminal!):
+   7/8        - Decrease/increase elastic band length
+   9          - Toggle elastic band enable/disable
+   BACKSPACE  - Reset simulation
+
+#########################################
+
+python src/holosoma/holosoma/run_sim.py robot:g1-23dof
+
+python3 src/holosoma_inference/holosoma_inference/run_policy.py inference:g1-23dof-loco \
+    --task.model-path src/holosoma_inference/holosoma_inference/models/loco/g1_23dof/model_fast_sac_0050000.onnx \
+    --task.no-use-joystick \
+    --task.interface lo
+
+
+python3 src/holosoma_inference/holosoma_inference/run_policy.py inference:g1-23dof-loco \
+    --task.model-path src/holosoma_inference/holosoma_inference/models/loco/g1_23dof/model_fast_sac_v1_0050000.onnx \
+    --task.no-use-joystick \
+    --task.interface lo
+
+#########################################
+
+python src/holosoma/holosoma/run_sim.py robot:unitree-rl-init-g1-23dof
+
+python3 src/holosoma_inference/holosoma_inference/run_policy.py inference:rllab-init-g1-23dof-loco \
+    --task.model-path src/holosoma_inference/holosoma_inference/models/loco/g1_23dof/model_fast_sac_rllab_init_v1_0080000.onnx \
+    --task.no-use-joystick \
+    --task.interface lo

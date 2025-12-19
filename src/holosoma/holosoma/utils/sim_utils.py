@@ -477,7 +477,7 @@ class DirectSimulation:
                     self.simulator.render()
 
                 # Periodic FPS logging (every 1000 steps)
-                if step_count > 0 and step_count % 1000 == 0:
+                if step_count > 0 and step_count % 500000 == 0:
                     fps_start_time = self._log_fps(step_count, fps_start_time)
 
                 step_count += 1
