@@ -315,12 +315,12 @@ def train(tyro_config: ExperimentConfig, training_context: TrainingContext | Non
 
 def main() -> None:
     import sys
-    sys.argv += ['exp:unitree-rl-init-g1-23dof-fast-sac-v1', \
+    sys.argv += ['exp:unitree-rl-init-g1-23dof-fast-sac-v2', \
                  'simulator:isaacgym', \
                  'logger:disabled', \
-                 '--training.seed', '1', \
-                 '--training.checkpoint', \
-                 'logs/hv-g1-manager/20251211_150328-g1_23dof_fast_sac_manager_v1-locomotion/model_0040000.pt'
+                 '--training.seed', '1'#, \
+                 #'--training.checkpoint', \
+                 #'logs/hv-g1-manager/20251211_150328-g1_23dof_fast_sac_manager_v1-locomotion/model_0040000.pt'
                 ]
 
     import tyro_cli

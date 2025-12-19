@@ -1,4 +1,6 @@
 """Locomotion reward presets for the G1 robot."""
+from __future__ import annotations
+import dataclasses
 
 from holosoma.config_types.reward import RewardManagerCfg, RewardTermCfg
 
@@ -385,8 +387,54 @@ g1_23dof_loco_fast_sac_v1 = RewardManagerCfg(
     },
 )
 
+pose_reward = RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:pose",
+            weight=-0.45,
+            params={
+                "pose_weights": [
+                    0.025,  # hip_pitch
+                    1.0,    # hip_roll
+                    5.0,    # hip_yaw
+                    0.025,  #    knee
+                    5.0,    #    ankle_pitch
+                    5.0,    #    ankle_roll
+                    0.025,  # hip_pitch
+                    1.0,    # hip_roll
+                    5.0,    # hip_yaw
+                    0.025,  #    knee
+                    5.0,    #    ankle_pitch
+                    5.0,    #    ankle_roll
+                    50.0,   #    waist_yaw
+                    # 50.0,  13
+                    # 50.0,  14
+                    5,      #    shoulder_pitch
+                    50.0,   #    shoulder_roll
+                    50.0,   #    shoulder_yaw
+                    1,      #  elbow
+                    50.0,   #  wrist_roll
+                    # 50.0, 20
+                    # 50.0, 21
+                    5,      #    shoulder_pitch
+                    50.0,   #    shoulder_roll
+                    50.0,   #    shoulder_yaw
+                    1,      #  elbow
+                    50.0,   #  wrist_roll
+                    # 50.0,  27
+                    # 50.0,  28
+                ],
+            },
+            tags=["penalty_curriculum"],
+        )
+
+
+_dict = dataclasses.asdict(g1_23dof_loco_fast_sac_v1)
+pose_dict = dataclasses.asdict(pose_reward)
+
+_dict.update({"pose": pose_dict})
+g1_23dof_loco_fast_sac_v2 = RewardManagerCfg(**_dict)
 
 __all__ = ["g1_29dof_loco",
            "g1_29dof_loco_fast_sac",
            "g1_23dof_loco_fast_sac",
-           "g1_23dof_loco_fast_sac_v1"]
+           "g1_23dof_loco_fast_sac_v1",
+           "g1_23dof_loco_fast_sac_v2"]
