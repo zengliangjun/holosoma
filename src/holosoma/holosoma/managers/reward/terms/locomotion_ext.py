@@ -30,7 +30,11 @@ def pose(
     weights = torch.tensor(pose_weights, device=env.device, dtype=torch.float32).unsqueeze(0)
     # Calculate squared deviation from default pose
     # Use env.default_dof_pos which is already set up from robot config
-    pose_error = torch.square(qpos - env.default_dof_pos)
+    pose_error = torch.square(qpos - env.default_dof_pos_base)
+    if env.walk_dof_pos_base is not None:
+        walk_error = torch.square(qpos - env.walk_dof_pos_base)
+    else:
+        walk_error = pose_error
 
     ##
     command_tensor = getattr(env.command_manager, "commands")
@@ -44,10 +48,10 @@ def pose(
             walk_mask = torch.logical_not(stand_mask)
             max_weights = max(pose_weights)
             pose_error[stand_mask, :] *= max_weights
-            pose_error[walk_mask, :] *= weights
+            pose_error[walk_mask, :] = walk_error[walk_mask, :] * weights
             weighted_error = pose_error
         else:
-            weighted_error = pose_error * weights
+            weighted_error = walk_error * weights
 
     return torch.sum(weighted_error, dim=1)
 

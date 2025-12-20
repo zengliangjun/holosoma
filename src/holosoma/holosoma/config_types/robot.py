@@ -26,6 +26,7 @@ class RobotInitState:
     lin_vel: list[float]
     ang_vel: list[float]
     default_joint_angles: dict[str, float]
+    walk_joint_angles: dict[str, float] | None = None
 
 
 @dataclass(frozen=True)

@@ -38,6 +38,13 @@ class LeggedRobotLocomotionManager(BaseTask):
         self.default_dof_pos_base = torch.zeros(
             self.num_dof, dtype=torch.float, device=self.device, requires_grad=False
         )
+        if self.robot_config.init_state.walk_joint_angles:
+            self.walk_dof_pos_base = torch.zeros(
+                self.num_dof, dtype=torch.float, device=self.device, requires_grad=False
+            )
+        else:
+            self.walk_dof_pos_base = None
+
         for i in range(self.num_dofs):
             name = self.dof_names[i]
             if name not in self.robot_config.init_state.default_joint_angles:
@@ -45,8 +52,15 @@ class LeggedRobotLocomotionManager(BaseTask):
             angle = self.robot_config.init_state.default_joint_angles[name]
             self.default_dof_pos_base[i] = angle
 
+            if self.walk_dof_pos_base is not None:
+                angle = self.robot_config.init_state.walk_joint_angles[name]
+                self.walk_dof_pos_base[i] = angle
+
         self.default_dof_pos_base = self.default_dof_pos_base.unsqueeze(0)  # (1, num_dof)
         self.default_dof_pos = self.default_dof_pos_base.repeat(self.num_envs, 1).clone()  # (num_envs, num_dof)
+
+        if self.walk_dof_pos_base is not None:
+            self.walk_dof_pos_base = self.walk_dof_pos_base.unsqueeze(0)  # (1, num_dof)
 
         self.need_to_refresh_envs = torch.ones(self.num_envs, dtype=torch.bool, device=self.device, requires_grad=False)
 
