@@ -17,6 +17,7 @@ class RobotDefaults(TypedDict):
 
 _ROBOT_DEFAULTS: dict[str, RobotDefaults] = {
     "g1": {"robot_dof": 29, "robot_height": 1.32, "object_name": "ground"},
+    "g123dof": {"robot_dof": 23, "robot_height": 1.32, "object_name": "ground"},
     "t1": {"robot_dof": 23, "robot_height": 1.2, "object_name": "ground"},
 }
 
@@ -40,7 +41,7 @@ class RobotConfig:
     """
 
     # Robot type selector - determines which defaults to use
-    robot_type: Literal["g1", "t1"] = "g1"
+    robot_type: Literal["g1", "t1", "g123dof"] = "g1"
 
     # Robot configuration (optional overrides)
     robot_dof: int | None = None
@@ -100,7 +101,11 @@ class RobotConfig:
         """Get robot URDF file path."""
         if self.robot_urdf_file is not None:
             return self.robot_urdf_file
-        return f"models/{self.robot_type}/{self.robot_type}_{self.ROBOT_DOF}dof.urdf"
+        if self.robot_type == "g123dof":
+            return f"models/g1/g1_{self.ROBOT_DOF}dof.urdf"
+        else:
+            return f"models/{self.robot_type}/{self.robot_type}_{self.ROBOT_DOF}dof.urdf"
+
 
     ROBOT_URDF_FILE = property(_robot_urdf_file, doc="Get robot URDF file path.")
 
@@ -109,7 +114,7 @@ class RobotConfig:
         if self.foot_sticking_links is not None:
             return self.foot_sticking_links
 
-        if self.robot_type == "g1":
+        if self.robot_type == "g1" or self.robot_type == "g123dof":
             return [
                 "left_ankle_roll_sphere_1_link",
                 "right_ankle_roll_sphere_1_link",
@@ -178,6 +183,40 @@ class RobotConfig:
                     0.0,
                 ]
             )
+        if self.robot_type == "g123dof":
+            return np.array(
+                [
+                    -0.312,
+                    0.0,
+                    0.0,
+                    0.669,
+                    -0.363,
+                    0.0,
+                    -0.312,
+                    0.0,
+                    0.0,
+                    0.669,
+                    -0.363,
+                    0.0,
+                    0.0,
+                    #0.0,
+                    #0.0,
+                    0.2,
+                    0.2,
+                    0.0,
+                    0.6,
+                    0.0,
+                    #0.0,
+                    #0.0,
+                    0.2,
+                    -0.2,
+                    0.0,
+                    0.6,
+                    0.0,
+                    #0.0,
+                    #0.0,
+                ]
+            )
         return None
 
     Q_A_STANDING = property(_q_a_standing, doc="Get standing pose (G1 only).")
@@ -203,6 +242,21 @@ class RobotConfig:
                 }
             )
 
+        if self.robot_type == "g123dof":
+            base.update(
+                {
+                    #"20": -0.3,  # waist roll   14 - 1
+                    #"21": -0.1,  # waist pitch   15 - 1
+                    "24": -0.1,  # "26": -0.1,  # left_wrist_roll   20 - 1
+                    #"27": -0.1,  # left_wrist_pitch   21 - 1
+                    #"28": -0.05,  # left_wrist_yaw   22 - 1
+
+                    "29": -0.1,  # "33": -0.1,  # left wrist  27 - 1
+                    #"34": -0.1, - 1
+                    #"35": -0.05, - 1
+                }
+            )
+
         return base
 
     MANUAL_LB = property(_manual_lb, doc="Get manual lower bounds.")
@@ -217,15 +271,30 @@ class RobotConfig:
         if self.robot_type == "g1":
             base.update(
                 {
-                    "20": 0.3,  # waist roll
-                    "25": 1.4,  # right elbow
-                    "26": 0.2,  # right wrist
-                    "27": 0.3,
-                    "28": 0.05,
-                    "32": 1.4,  # elbow
-                    "33": 0.2,  # left wrist
-                    "34": 0.3,
-                    "35": 0.05,
+                    "20": 0.3,  # waist roll   14 - 1
+                    "25": 1.4,  # left elbow  19 - 1
+                    "26": 0.2,  # left_wrist_roll  20 - 1
+                    "27": 0.3,  # left_wrist_pitch  21 - 1
+                    "28": 0.05,  # left_wrist_yaw  22 - 1
+                    "32": 1.4,   # right_elbow  26 - 1
+                    "33": 0.2,   # wrist_roll   27 - 1
+                    "34": 0.3,   # wrist_pitch   28 - 1
+                    "35": 0.05,  # wrist_yaw   29 - 1
+                }
+            )
+
+        if self.robot_type == "g123dof":
+            base.update(
+                {
+                    #"20": 0.3,  # waist roll   14 - 1
+                    "23": 1.4,  # "25": 1.4,  # left elbow  19 - 1
+                    "24": 0.2,  # "26": 0.2,  # left_wrist_roll  20 - 1
+                    #"27": 0.3,  # left_wrist_pitch  21 - 1
+                    #"28": 0.05,  # left_wrist_yaw  22 - 1
+                    "28": 1.4,   #"32": 1.4,   # right_elbow  26 - 1
+                    "29": 0.2,   #"33": 0.2,   # wrist_roll   27 - 1
+                    #"34": 0.3,   # wrist_roll   28 - 1
+                    #"35": 0.05,  # wrist_roll   29 - 1
                 }
             )
 
@@ -240,6 +309,8 @@ class RobotConfig:
 
         if self.robot_type == "g1":
             return {"19": 0.2, "20": 0.2}  # waist yaw, waist roll
+        if self.robot_type == "g123dof":
+            return {"19": 0.2}  # waist yaw, waist roll
         return {}
 
     MANUAL_COST = property(_manual_cost, doc="Get manual cost weights.")
@@ -249,7 +320,7 @@ class RobotConfig:
         if self.nominal_tracking_indices is not None:
             return self.nominal_tracking_indices
 
-        if self.robot_type == "g1":
+        if self.robot_type == "g1" or self.robot_type == "g123dof":
             return np.arange(19)
         if self.robot_type == "t1":
             return np.concatenate([np.arange(7), np.arange(11, 23)])

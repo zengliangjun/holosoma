@@ -9,7 +9,7 @@ from holosoma_retargeting.config_types.data_conversion import DataConversionConf
 
 def get_default_data_conversion_config(
     input_file: str,
-    robot: Literal["g1", "t1"] = "g1",
+    robot: Literal["g1", "t1", "g123dof"] = "g1",
     data_format: Literal["lafan", "smplh", "mocap"] = "smplh",
     object_name: str | None = None,
     input_fps: int = 30,

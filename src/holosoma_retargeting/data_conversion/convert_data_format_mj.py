@@ -66,10 +66,16 @@ def create_task_constants(
         namespace.OBJECT_URDF_FILE = f"models/{namespace.OBJECT_NAME}/{namespace.OBJECT_NAME}.urdf"
         namespace.OBJECT_MESH_FILE = f"models/{namespace.OBJECT_NAME}/{namespace.OBJECT_NAME}.obj"
         namespace.OBJECT_URDF_TEMPLATE = f"models/templates/{namespace.OBJECT_NAME}.urdf.jinja"
-        namespace.SCENE_XML_FILE = (
-            f"models/{robot_config.robot_type}/"
-            f"{robot_config.robot_type}_{namespace.ROBOT_DOF}dof_w_{namespace.OBJECT_NAME}.xml"
-        )
+        if robot_config.robot_type == "g123dof":
+            namespace.SCENE_XML_FILE = (
+                f"models/g1/"
+                f"g1_{namespace.ROBOT_DOF}dof_w_{namespace.OBJECT_NAME}.xml"
+            )
+        else:
+            namespace.SCENE_XML_FILE = (
+                f"models/{robot_config.robot_type}/"
+                f"{robot_config.robot_type}_{namespace.ROBOT_DOF}dof_w_{namespace.OBJECT_NAME}.xml"
+            )
     else:
         namespace.OBJECT_URDF_FILE = namespace.ROBOT_URDF_FILE
         namespace.OBJECT_MESH_FILE = ""
@@ -543,6 +549,8 @@ def run_simulator(joint_names: list[str]):
                 "body_lin_vel_w",
                 "body_ang_vel_w",
             ):
+
+                log[k] = log[k][150:-150]
                 log[k] = np.stack(log[k], axis=0)[:]
 
             if has_dynamic_object:
@@ -596,22 +604,22 @@ def main():
             "right_ankle_pitch_joint",
             "right_ankle_roll_joint",
             "waist_yaw_joint",
-            "waist_roll_joint",
-            "waist_pitch_joint",
+            #"waist_roll_joint",
+            #"waist_pitch_joint",
             "left_shoulder_pitch_joint",
             "left_shoulder_roll_joint",
             "left_shoulder_yaw_joint",
             "left_elbow_joint",
             "left_wrist_roll_joint",
-            "left_wrist_pitch_joint",
-            "left_wrist_yaw_joint",
+            #"left_wrist_pitch_joint",
+            #"left_wrist_yaw_joint",
             "right_shoulder_pitch_joint",
             "right_shoulder_roll_joint",
             "right_shoulder_yaw_joint",
             "right_elbow_joint",
             "right_wrist_roll_joint",
-            "right_wrist_pitch_joint",
-            "right_wrist_yaw_joint",
+            #"right_wrist_pitch_joint",
+            #"right_wrist_yaw_joint",
         ],
     )
 

@@ -17,7 +17,7 @@ class DataConversionConfig:
     input_file: str
     """Path to input motion file."""
 
-    robot: Literal["g1", "t1"] = "g1"
+    robot: Literal["g1", "t1", "g123dof"] = "g1"
     """Robot model to use."""
 
     data_format: Literal["lafan", "smplh", "mocap"] = "smplh"

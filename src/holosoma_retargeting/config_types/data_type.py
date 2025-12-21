@@ -161,6 +161,23 @@ JOINTS_MAPPINGS = {
         "LeftHand": "left_rubber_hand_link",
         "RightHand": "right_rubber_hand_link",
     },
+    ("lafan", "g123dof"): {
+        "Spine1": "pelvis_contour_link",
+        "LeftUpLeg": "left_hip_pitch_link",
+        "RightUpLeg": "right_hip_pitch_link",
+        "LeftLeg": "left_knee_link",
+        "RightLeg": "right_knee_link",
+        "LeftArm": "left_shoulder_roll_link",
+        "RightArm": "right_shoulder_roll_link",
+        "LeftForeArm": "left_elbow_link",
+        "RightForeArm": "right_elbow_link",
+        "LeftFoot": "left_ankle_intermediate_1_link",
+        "RightFoot": "right_ankle_intermediate_1_link",
+        "LeftToeBase": "left_ankle_roll_sphere_5_link",
+        "RightToeBase": "right_ankle_roll_sphere_5_link",
+        "LeftHand": "left_rubber_hand_link",
+        "RightHand": "right_rubber_hand_link",
+    },
     ("lafan", "t1"): {
         "Spine1": "Trunk",
         "LeftUpLeg": "Hip_Pitch_Left",
@@ -195,6 +212,23 @@ JOINTS_MAPPINGS = {
         "L_Wrist": "left_rubber_hand_link",
         "R_Wrist": "right_rubber_hand_link",
     },
+    ("smplh", "g123dof"): {
+        "Pelvis": "pelvis_contour_link",
+        "L_Hip": "left_hip_pitch_link",
+        "R_Hip": "right_hip_pitch_link",
+        "L_Knee": "left_knee_link",
+        "R_Knee": "right_knee_link",
+        "L_Shoulder": "left_shoulder_roll_link",
+        "R_Shoulder": "right_shoulder_roll_link",
+        "L_Elbow": "left_elbow_link",
+        "R_Elbow": "right_elbow_link",
+        "L_Ankle": "left_ankle_intermediate_1_link",
+        "R_Ankle": "right_ankle_intermediate_1_link",
+        "L_Toe": "left_ankle_roll_sphere_5_link",
+        "R_Toe": "right_ankle_roll_sphere_5_link",
+        "L_Wrist": "left_rubber_hand_link",
+        "R_Wrist": "right_rubber_hand_link",
+    },
     ("smplh", "t1"): {
         "Pelvis": "Trunk",
         "L_Hip": "Hip_Pitch_Left",
@@ -213,6 +247,23 @@ JOINTS_MAPPINGS = {
         "R_Wrist": "right_hand_sphere_link",
     },
     ("mocap", "g1"): {
+        "Spine1": "pelvis_contour_link",
+        "LeftUpLeg": "left_hip_pitch_link",
+        "LeftLeg": "left_knee_link",
+        "LeftToeBase": "left_ankle_roll_sphere_5_link",
+        "RightUpLeg": "right_hip_pitch_link",
+        "RightLeg": "right_knee_link",
+        "RightToeBase": "right_ankle_roll_sphere_5_link",
+        "LeftArm": "left_shoulder_roll_link",
+        "LeftForeArm": "left_elbow_link",
+        "LeftHandMiddle3": "left_sphere_hand_link",
+        "RightArm": "right_shoulder_roll_link",
+        "RightForeArm": "right_elbow_link",
+        "RightHandMiddle3": "right_sphere_hand_link",
+        "LeftFoot": "left_ankle_intermediate_1_link",
+        "RightFoot": "right_ankle_intermediate_1_link",
+    },
+    ("mocap", "g123dof"): {
         "Spine1": "pelvis_contour_link",
         "LeftUpLeg": "left_hip_pitch_link",
         "LeftLeg": "left_knee_link",
@@ -283,7 +334,7 @@ class MotionDataConfig:
     """
 
     data_format: Literal["lafan", "smplh", "mocap"] = "smplh"
-    robot_type: Literal["g1", "t1"] = "g1"
+    robot_type: Literal["g1", "t1", "g123dof"] = "g1"
 
     # Optional overrides - if None, will use defaults from data_format
     demo_joints: list[str] | None = None

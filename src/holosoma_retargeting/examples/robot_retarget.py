@@ -696,5 +696,9 @@ def main(cfg: RetargetingConfig) -> None:
 
 
 if __name__ == "__main__":
+    import os
+    import os.path as osp
+    root_path = osp.abspath(osp.join(osp.dirname(__file__), ".."))
+    os.chdir(root_path)
     cfg = tyro.cli(RetargetingConfig)
     main(cfg)

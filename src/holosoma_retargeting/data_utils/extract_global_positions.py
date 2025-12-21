@@ -109,5 +109,12 @@ def main(cfg: Config):
 
 
 if __name__ == "__main__":
+    import os
+    import os.path as osp
+    root = osp.dirname(osp.abspath(__file__))
+    os.chdir(root)
+    import sys
+    sys.argv += ['--input_dir', '/workspace/PROJECTS/MOTIONS/data/LAFAN1/lafan1/', '--output_dir', '../demo_data/lafan',]
+
     cfg = tyro.cli(Config)
     main(cfg)
