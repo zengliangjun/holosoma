@@ -315,7 +315,7 @@ def train(tyro_config: ExperimentConfig, training_context: TrainingContext | Non
 
 def main() -> None:
     import sys
-    sys.argv += ['exp:unitree-rl-init-g1-23dof-fast-sac-v2', \
+    sys.argv += ['exp:g123dof_loc_fastsac_v1', \
                  'simulator:isaacgym', \
                  'logger:disabled', \
                  '--training.seed', '1'#, \

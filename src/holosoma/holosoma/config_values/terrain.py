@@ -40,8 +40,34 @@ terrain_locomotion_mix = TerrainManagerCfg(
             "flat": 0.2,
             "rough": 0.6,
             "low_obstacles": 0.2,
-            "smooth_slope": 0.0,
-            "rough_slope": 0.0,
+            "smooth_slope": 0,
+            "rough_slope": 0,
+        },
+        max_slope=0.3,
+        slope_treshold=0.75,
+    )
+)
+
+terrain_locomotion_mix_dof23 = TerrainManagerCfg(
+    terrain_term=TerrainTermCfg(
+        func="holosoma.managers.terrain.terms.locomotion:TerrainLocomotion",
+        mesh_type=MeshType.TRIMESH,
+        horizontal_scale=0.1,
+        vertical_scale=0.005,
+        border_size=40,
+        static_friction=1.0,
+        dynamic_friction=1.0,
+        restitution=0.0,
+        terrain_length=8.0,
+        terrain_width=8.0,
+        num_rows=10,
+        num_cols=20,
+        terrain_config={
+            "flat": 0.2,
+            "rough": 0.4,
+            "low_obstacles": 0.2,
+            "smooth_slope": 0.1,
+            "rough_slope": 0.1,
         },
         max_slope=0.3,
         slope_treshold=0.75,
