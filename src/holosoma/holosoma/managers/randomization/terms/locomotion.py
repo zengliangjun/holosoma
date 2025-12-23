@@ -518,12 +518,13 @@ def randomize_base_com_startup(
     if not enabled:
         return
 
-    logger.info(
-        f"[Randomization] Base CoM: "
-        f"x={base_com_range.get('x', [0, 0])}, "
-        f"y={base_com_range.get('y', [0, 0])}, "
-        f"z={base_com_range.get('z', [0, 0])} (operation=add)"
-    )
+    if env.common_step_counter % 100 == 0:
+        logger.info(
+            f"[Randomization] Base CoM: "
+            f"x={base_com_range.get('x', [0, 0])}, "
+            f"y={base_com_range.get('y', [0, 0])}, "
+            f"z={base_com_range.get('z', [0, 0])} (operation=add)"
+        )
 
     simulator = env.simulator
 
@@ -643,11 +644,12 @@ def randomize_mass_startup(
     if not enabled:
         return
 
-    logger.info(
-        f"[Randomization] Mass: "
-        f"link_mass={link_mass_range} (operation=scale, enabled={enable_link_mass}), "
-        f"base_mass={added_mass_range} (operation=add, enabled={enable_base_mass})"
-    )
+    if env.common_step_counter % 100 == 0:
+        logger.info(
+            f"[Randomization] Mass: "
+            f"link_mass={link_mass_range} (operation=scale, enabled={enable_link_mass}), "
+            f"base_mass={added_mass_range} (operation=add, enabled={enable_base_mass})"
+        )
 
     simulator = env.simulator
     idx = _ensure_env_ids_tensor(env, env_ids)
@@ -787,7 +789,8 @@ def randomize_friction_startup(
     if not enabled:
         return
 
-    logger.info(f"[Randomization] Friction: range={friction_range} (operation=abs)")
+    if env.common_step_counter % 100 == 0:
+        logger.info(f"[Randomization] Friction: range={friction_range} (operation=abs)")
 
     idx = _ensure_env_ids_tensor(env, env_ids)
     if idx.numel() == 0:
