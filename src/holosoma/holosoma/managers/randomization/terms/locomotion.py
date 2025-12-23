@@ -518,7 +518,7 @@ def randomize_base_com_startup(
     if not enabled:
         return
 
-    if env.common_step_counter % 100 == 0:
+    if not hasattr(env, "common_step_counter") or env.common_step_counter % 100 == 0:
         logger.info(
             f"[Randomization] Base CoM: "
             f"x={base_com_range.get('x', [0, 0])}, "
@@ -644,7 +644,7 @@ def randomize_mass_startup(
     if not enabled:
         return
 
-    if env.common_step_counter % 100 == 0:
+    if not hasattr(env, "common_step_counter") or env.common_step_counter % 100 == 0:
         logger.info(
             f"[Randomization] Mass: "
             f"link_mass={link_mass_range} (operation=scale, enabled={enable_link_mass}), "
@@ -789,7 +789,7 @@ def randomize_friction_startup(
     if not enabled:
         return
 
-    if env.common_step_counter % 100 == 0:
+    if not hasattr(env, "common_step_counter") or env.common_step_counter % 100 == 0:
         logger.info(f"[Randomization] Friction: range={friction_range} (operation=abs)")
 
     idx = _ensure_env_ids_tensor(env, env_ids)
