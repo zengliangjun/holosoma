@@ -38,18 +38,18 @@ class SimpleReplayBuffer(nn.Module):
         self.gamma = gamma
         self.n_steps = n_steps
         self.device = device
+        self.cache_device = "cpu"
 
-        device = "cpu"
-        self.observations = torch.zeros((n_env, buffer_size, n_obs), device=device, dtype=torch.float)
-        self.actions = torch.zeros((n_env, buffer_size, n_act), device=device, dtype=torch.float)
-        self.rewards = torch.zeros((n_env, buffer_size), device=device, dtype=torch.float)
-        self.dones = torch.zeros((n_env, buffer_size), device=device, dtype=torch.long)
-        self.truncations = torch.zeros((n_env, buffer_size), device=device, dtype=torch.long)
-        self.next_observations = torch.zeros((n_env, buffer_size, n_obs), device=device, dtype=torch.float)
+        self.observations = torch.zeros((n_env, buffer_size, n_obs), device=self.cache_device, dtype=torch.float)
+        self.actions = torch.zeros((n_env, buffer_size, n_act), device=self.cache_device, dtype=torch.float)
+        self.rewards = torch.zeros((n_env, buffer_size), device=self.cache_device, dtype=torch.float)
+        self.dones = torch.zeros((n_env, buffer_size), device=self.cache_device, dtype=torch.long)
+        self.truncations = torch.zeros((n_env, buffer_size), device=self.cache_device, dtype=torch.long)
+        self.next_observations = torch.zeros((n_env, buffer_size, n_obs), device=self.cache_device, dtype=torch.float)
         # Store full critic observations
-        self.critic_observations = torch.zeros((n_env, buffer_size, n_critic_obs), device=device, dtype=torch.float)
+        self.critic_observations = torch.zeros((n_env, buffer_size, n_critic_obs), device=self.cache_device, dtype=torch.float)
         self.next_critic_observations = torch.zeros(
-            (n_env, buffer_size, n_critic_obs), device=device, dtype=torch.float
+            (n_env, buffer_size, n_critic_obs), device=self.cache_device, dtype=torch.float
         )
         self.ptr = 0
 
@@ -57,7 +57,7 @@ class SimpleReplayBuffer(nn.Module):
         self,
         tensor_dict: TensorDict,
     ):
-        device = "cpu"
+        device = self.cache_device
         observations = tensor_dict["observations"].to(device)
         actions = tensor_dict["actions"].to(device)
         rewards = tensor_dict["next"]["rewards"].to(device)
@@ -75,8 +75,8 @@ class SimpleReplayBuffer(nn.Module):
         critic_observations = tensor_dict["critic_observations"].to(device)
         next_critic_observations = tensor_dict["next"]["critic_observations"].to(device)
         # Store full critic observations
-        self.critic_observations[:, ptr] = critic_observations
-        self.next_critic_observations[:, ptr] = next_critic_observations
+        self.critic_observations[:, ptr] = critic_observations.to(self.cache_device)
+        self.next_critic_observations[:, ptr] = next_critic_observations.to(self.cache_device)
         self.ptr += 1
 
     @torch.no_grad()
@@ -88,7 +88,7 @@ class SimpleReplayBuffer(nn.Module):
                 0,
                 min(self.buffer_size, self.ptr),
                 (self.n_env, batch_size),
-                device="cpu",
+                device=self.cache_device,
             )
             obs_indices = indices.unsqueeze(-1).expand(-1, -1, self.n_obs)
             act_indices = indices.unsqueeze(-1).expand(-1, -1, self.n_act)
@@ -122,7 +122,7 @@ class SimpleReplayBuffer(nn.Module):
                     0,
                     self.buffer_size,
                     (self.n_env, batch_size),
-                    device=self.device,
+                    device=self.cache_device,
                 )
             else:
                 # Buffer not full - ensure n-step sequence doesn't exceed valid data
@@ -131,7 +131,7 @@ class SimpleReplayBuffer(nn.Module):
                     0,
                     max_start_idx,
                     (self.n_env, batch_size),
-                    device=self.device,
+                    device=self.cache_device,
                 )
             obs_indices = indices.unsqueeze(-1).expand(-1, -1, self.n_obs)
             act_indices = indices.unsqueeze(-1).expand(-1, -1, self.n_act)
@@ -147,7 +147,7 @@ class SimpleReplayBuffer(nn.Module):
 
             # Create sequential indices for each sample
             # This creates a [n_env, batch_size, n_step] tensor of indices
-            seq_offsets = torch.arange(self.n_steps, device=self.device).view(1, 1, -1)
+            seq_offsets = torch.arange(self.n_steps, device=self.cache_device).view(1, 1, -1)
             all_indices = (indices.unsqueeze(-1) + seq_offsets) % self.buffer_size  # [n_env, batch_size, n_step]
 
             # Gather all rewards and terminal flags
@@ -169,7 +169,7 @@ class SimpleReplayBuffer(nn.Module):
             effective_n_steps = done_masks.sum(2)
 
             # Create discount factors
-            discounts = torch.pow(self.gamma, torch.arange(self.n_steps, device=self.device))  # [n_steps]
+            discounts = torch.pow(self.gamma, torch.arange(self.n_steps, device=self.cache_device))  # [n_steps]
 
             # Apply masks and discounts to rewards
             masked_rewards = all_rewards * done_masks  # [n_env, batch_size, n_step]
@@ -284,7 +284,7 @@ class EmpiricalNormalization(nn.Module):
             return (x - self._mean) / (self._std + self.eps)
         return x / (self._std + self.eps)
 
-    @torch.jit.unused
+    # @torch.jit.unused
     def update(self, x):
         if self.until is not None and self.count >= self.until:
             return
@@ -330,7 +330,7 @@ class EmpiricalNormalization(nn.Module):
         self._std.copy_(self._var.sqrt())
         self.count.copy_(new_count)
 
-    @torch.jit.unused
+    #@torch.jit.unused
     def inverse(self, y):
         return y * (self._std + self.eps) + self._mean
 

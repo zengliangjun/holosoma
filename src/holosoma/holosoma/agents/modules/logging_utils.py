@@ -135,10 +135,10 @@ class LoggingHelper:
         # Also process raw episode data if it exists
         if "raw_episode" in infos:
             self.raw_ep_infos.append(infos["raw_episode"])
-        self.cur_reward_sum += rewards
+        self.cur_reward_sum += rewards.to(self.device)
         self.cur_episode_length += 1
 
-        new_ids = (dones > 0).nonzero(as_tuple=False)
+        new_ids = (dones > 0).nonzero(as_tuple=False).to(self.device)
         if len(new_ids) > 0:
             self.rewbuffer.extend(self.cur_reward_sum[new_ids][:, 0].cpu().numpy().tolist())
             self.lenbuffer.extend(self.cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())

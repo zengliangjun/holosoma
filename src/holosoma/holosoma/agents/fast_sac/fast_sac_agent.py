@@ -168,7 +168,7 @@ class FastSACAgent(BaseAlgo):
         self.logging_helper = LoggingHelper(
             self.writer,
             self.log_dir,
-            device=self.device,
+            device="cpu",
             num_envs=self.env.num_envs,
             num_steps_per_env=config.logging_interval,
             num_learning_iterations=config.num_learning_iterations,
@@ -290,9 +290,6 @@ class FastSACAgent(BaseAlgo):
             encoder_obs_key=args.encoder_obs_key,
             encoder_obs_shape=args.encoder_obs_shape,
         )
-
-        print(self.actor)
-        print(self.qnet)
 
         self.log_alpha = torch.tensor([math.log(args.alpha_init)], requires_grad=True, device=device)
         self.policy = self.actor.explore
@@ -682,9 +679,15 @@ class FastSACAgent(BaseAlgo):
 
             with self.logging_helper.record_collection_time():
                 with torch.no_grad(), self._maybe_amp():
-                    norm_obs = normalize_obs(obs, update=False)
+                    if dones is not None:
+                        dones = dones.to(device)
+
+                    policy_obs = obs.to(device)
+
+                    norm_obs = normalize_obs(policy_obs, update=False)
                     actions = policy(obs=norm_obs, dones=dones)
 
+                step_action = actions.to(env.device)
                 next_obs, rewards, dones, infos = env.step(actions.float())
                 truncations = infos["time_outs"]
 

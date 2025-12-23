@@ -80,12 +80,12 @@ class SymmetryUtils:
             for key in sub_obs_keys:
                 # Indices for single frame (used during mirroring after reshape)
                 self.sub_observation_indices_single_frame[obs_key][key] = torch.arange(
-                    idx, idx + self.sub_observation_dims[key], device=self.env.device
+                    idx, idx + self.sub_observation_dims[key], device="cpu"
                 )
                 # For direct config, observations may not have explicit history handling in indices
                 # These indices work with the full flattened observation
                 self.sub_observation_indices[obs_key][key] = torch.arange(
-                    idx, idx + self.sub_observation_dims[key], device=self.env.device
+                    idx, idx + self.sub_observation_dims[key], device="cpu"
                 )
                 idx += self.sub_observation_dims[key]
 
@@ -133,11 +133,11 @@ class SymmetryUtils:
 
                 # Indices for full observation (with history flattened)
                 self.sub_observation_indices[group_name][term_name] = torch.arange(
-                    idx, idx + term_dim_with_history, device=self.env.device
+                    idx, idx + term_dim_with_history, device="cpu"
                 )
                 # Indices for single frame (used during mirroring after reshape)
                 self.sub_observation_indices_single_frame[group_name][term_name] = torch.arange(
-                    idx_single_frame, idx_single_frame + term_dim, device=self.env.device
+                    idx_single_frame, idx_single_frame + term_dim, device="cpu"
                 )
                 idx += term_dim_with_history
                 idx_single_frame += term_dim
@@ -177,14 +177,14 @@ class SymmetryUtils:
 
         # Create joint mapping tensor
         self.joint_index_map = torch.tensor(
-            [joint_index_mapping.get(i, i) for i in range(len(dof_names))], device=self.env.device, dtype=torch.long
+            [joint_index_mapping.get(i, i) for i in range(len(dof_names))], device="cpu", dtype=torch.long
         )
 
         # Create sign flip mask
         sign_flip_indices = {name_to_idx[name] for name in sign_flip_joints if name in name_to_idx}
         self.sign_flip_mask = torch.tensor(
             [-1.0 if i in sign_flip_indices else 1.0 for i in range(len(dof_names))],
-            device=self.env.device,
+            device="cpu",
             dtype=torch.float,
         )
 
@@ -267,9 +267,10 @@ class SymmetryUtils:
             )
             # Apply mirroring to each sub-observation component using single-frame indices
             for sub_obs_key in self.sub_observation_keys[obs_key]:
-                mirrored_obs[..., self.sub_observation_indices_single_frame[obs_key][sub_obs_key]] = getattr(
+                index = self.sub_observation_indices_single_frame[obs_key][sub_obs_key].to(mirrored_obs.device)
+                mirrored_obs[..., index] = getattr(
                     self, f"mirror_obs_{sub_obs_key}"
-                )(mirrored_obs[..., self.sub_observation_indices_single_frame[obs_key][sub_obs_key]])
+                )(mirrored_obs[..., index])
             mirrored_obs_all[..., idx : idx + cur_obs_length] = mirrored_obs.reshape(B, cur_obs_length)
             idx += cur_obs_length
 
@@ -291,7 +292,9 @@ class SymmetryUtils:
             Joint mappings are applied and signs are flipped as appropriate.
             Returns [a_mapped0 * sign0, a_mapped1 * sign1, ..., a_mappedN * signN] (mirrored and sign-flipped).
         """
-        return action[..., self.joint_index_map] * self.sign_flip_mask
+        index = self.joint_index_map.to(action.device)
+
+        return action[..., index] * self.sign_flip_mask.to(action.device)
 
     def mirror_obs_base_lin_vel(self, base_lin_vel: torch.Tensor) -> torch.Tensor:
         """Mirrors the base linear velocity in robot's base frame.
@@ -488,7 +491,9 @@ class SymmetryUtils:
             Mirrored joint positions with left-right mapping applied and signs flipped for appropriate joints.
             Outputs: [q_mapped0 * sign0, q_mapped1 * sign1, ..., q_mappedN * signN] (mirrored and sign-flipped).
         """
-        return dof_pos[..., self.joint_index_map] * self.sign_flip_mask
+        index = self.joint_index_map.to(dof_pos.device)
+
+        return dof_pos[..., index] * self.sign_flip_mask.to(dof_pos.device)
 
     def mirror_obs_dof_vel(self, dof_vel: torch.Tensor) -> torch.Tensor:
         """Mirrors the joint velocities (same mapping as joint positions).
@@ -505,7 +510,8 @@ class SymmetryUtils:
             Mirrored joint velocities with same transformation as joint positions.
             Outputs: [qd_mapped0 * sign0, qd_mapped1 * sign1, ..., qd_mappedN * signN] (mirrored and sign-flipped).
         """
-        return dof_vel[..., self.joint_index_map] * self.sign_flip_mask
+        index = self.joint_index_map.to(dof_vel.device)
+        return dof_vel[..., index] * self.sign_flip_mask.to(dof_vel.device)
 
     def mirror_obs_actions(self, actions: torch.Tensor) -> torch.Tensor:
         """Mirrors the previous actions (same mapping as joint positions).
@@ -522,7 +528,8 @@ class SymmetryUtils:
             Mirrored actions with same transformation as joint positions.
             Outputs: [a_mapped0 * sign0, a_mapped1 * sign1, ..., a_mappedN * signN] (mirrored and sign-flipped).
         """
-        return actions[..., self.joint_index_map] * self.sign_flip_mask
+        index = self.joint_index_map.to(actions.device)
+        return actions[..., index] * self.sign_flip_mask.to(actions.device)
 
     def mirror_obs_ee_apply_force(self, ee_apply_force: torch.Tensor) -> torch.Tensor:
         """Mirrors the end-effector applied forces in base frame.

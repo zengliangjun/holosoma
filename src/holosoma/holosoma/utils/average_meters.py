@@ -59,7 +59,8 @@ class TensorAverageMeter:
 
 
 class TensorAverageMeterDict:
-    def __init__(self):
+    def __init__(self, device = "cpu"):
+        self.device = device
         self.data = {}
 
     def add(self, data_dict):
@@ -68,7 +69,7 @@ class TensorAverageMeterDict:
             # pickling issues with DDP.
             if k not in self.data:
                 self.data[k] = TensorAverageMeter()
-            self.data[k].add(v)
+            self.data[k].add(v.to(self.device))
 
     def mean(self):
         return {k: v.mean() for k, v in self.data.items()}
