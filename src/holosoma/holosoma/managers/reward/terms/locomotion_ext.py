@@ -7,6 +7,22 @@ from holosoma.utils.safe_torch_import import torch
 if TYPE_CHECKING:
     from holosoma.envs.locomotion.locomotion_manager import LeggedRobotLocomotionManager
 
+def penalty_pose_maxoffset(
+    env: LeggedRobotLocomotionManager,
+    joint_names: list[str],
+    max_offset: list[float],
+) -> torch.Tensor:
+    # Get current joint positions
+    joint_ids = []
+    for name in joint_names:
+        joint_ids.append(env.dof_names.index(name))
+
+    pose_error = torch.abs(env.simulator.dof_pos[:, joint_ids] - env.default_dof_pos_base[:, joint_ids])
+    max_offset = torch.tensor(max_offset, device = pose_error.device)[None, :]
+    offset_error = torch.clamp_min(pose_error - max_offset, 0)
+    offset_error = torch.square(offset_error)
+
+    return torch.sum(offset_error, dim=1)
 
 def pose(
     env: LeggedRobotLocomotionManager,

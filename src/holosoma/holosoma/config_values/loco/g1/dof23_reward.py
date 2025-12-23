@@ -40,6 +40,25 @@ g1_23dof_loco_fast_sac = RewardManagerCfg(
             weight=5.0,
             params={"swing_height": 0.09, "tracking_sigma": 0.008},
         ),
+        "penalty_pose_maxoffset": RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:penalty_pose_maxoffset",
+            weight=-5.0,
+            params={
+                "joint_names": [
+                    "left_hip_pitch_joint",
+                    "left_knee_joint",
+                    "right_hip_pitch_joint",
+                    "right_knee_joint"
+                ],
+                "max_offset": [
+                    0.3,
+                    0.25,
+                    0.3,
+                    0.25,
+                ]
+            },
+            tags=["penalty_curriculum"],
+        ),
         "pose": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:pose",
             weight=-0.5,
