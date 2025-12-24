@@ -55,16 +55,17 @@ g1_curriculum_fast_sac = CurriculumManagerCfg(
             func="holosoma.managers.curriculum.terms.locomotion_ext:DomainRandCurriculum",
             params={
                 "enabled": True,
-                "initial_scale": 0,
-                "min_scale": 0,
+                "initial_scale": 0.05,
+                "min_scale": 0.05,
                 "max_scale": 1.0,
                 "level_down_threshold": 750.0,
                 "level_up_threshold": 850.0,
                 "degree": 0.0001,
-                "dr_reset_names":["push_randomizer_state",
-                                  "mass_randomizer",
-                                  "randomize_friction",
-                                  "randomize_base_com"],
+                "dr_reset_names": ["push_randomizer_state"],
+                #"mass_randomizer",
+                #"randomize_friction",
+                #"randomize_base_com"
+                #                 ],
 
                 "dr_push_randomizer_state_params": ["max_push_vel"],
                 "dr_push_randomizer_state_max_push_vel_init": [0.3, 0.3],
