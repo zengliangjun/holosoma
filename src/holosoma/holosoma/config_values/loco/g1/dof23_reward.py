@@ -124,4 +124,64 @@ g1_23dof_loco_fast_sac = RewardManagerCfg(
     },
 )
 
-__all__ = ["g1_23dof_loco_fast_sac"]
+pose_reward = RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:pose",
+            weight=-0.45,
+            params={
+                "pose_weights": [
+                    0.01,  # hip_pitch
+                    1.0,   # hip_roll
+                    5.0,   # hip_yaw
+                    0.01,  #    knee
+                    5.0,   #    ankle_pitch
+                    5.0,   #    ankle_roll
+                    0.01,  # hip_pitch
+                    1.0,   # hip_roll
+                    5.0,   # hip_yaw
+                    0.01,  #    knee
+                    5.0,
+                    5.0,
+                    50.0,
+                    # 50.0,  13
+                    # 50.0,  14
+                    0.01,    #    shoulder_pitch
+                    50.0,    #    shoulder_roll
+                    50.0,    #    shoulder_yaw
+                    50.0,     #  elbow
+                    50.0,    #  wrist_roll
+                    # 50.0, 20
+                    # 50.0, 21
+                    0.01,     #    shoulder_pitch
+                    50.0,    #    shoulder_roll
+                    50.0,    #    shoulder_yaw
+                    50.0,     #  elbow
+                    50.0,    #  wrist_roll
+                    # 50.0,  27
+                    # 50.0,  28
+                ],
+            },
+            tags=["penalty_curriculum"],
+        )
+
+reward_shoulder_gait = RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:reward_shoulder_gait",
+            weight=0.2,
+            params={
+                "swing_range":0.3,
+                "swing_sigma":0.05,
+                "shoulde_joint_names": ["left_shoulder_pitch_joint", "right_shoulder_pitch_joint"],
+                "hip_joint_names": ["left_hip_pitch_joint", "right_hip_pitch_joint"],
+            },
+            tags=["penalty_curriculum"],
+        )
+
+_dict = dataclasses.asdict(g1_23dof_loco_fast_sac)
+pose_dict = dataclasses.asdict(pose_reward)
+reward_shoulder_gait_dict = dataclasses.asdict(reward_shoulder_gait)
+
+_dict['terms'].update({"pose": pose_dict})
+_dict['terms'].update({"reward_shoulder_gait": reward_shoulder_gait_dict})
+
+g1_23dof_shoulder_gait = RewardManagerCfg(**_dict)
+
+__all__ = ["g1_23dof_loco_fast_sac", "g1_23dof_shoulder_gait"]

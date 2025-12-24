@@ -12,7 +12,8 @@ from holosoma.config_values.loco.g1.experiment import g1_29dof, \
 
 
 from holosoma.config_values.loco.g1.dof23_experiment import \
-        g123dof_loc_fastsac_v1
+        g123dof_loc_fastsac_v1, \
+        g123dof_loc_fastsac_v2
 
 
 from holosoma.config_values.loco.t1.experiment import t1_29dof, \
@@ -39,6 +40,7 @@ DEFAULTS = {
     "unitree_rl_init_g1_23dof_fast_sac_v2": unitree_rl_init_g1_23dof_fast_sac_v2,
     "unitree_rl_init_g1_23dof_fast_sac_v3": unitree_rl_init_g1_23dof_fast_sac_v3,
     "g123dof_loc_fastsac_v1": g123dof_loc_fastsac_v1,
+    "g123dof_loc_fastsac_v2": g123dof_loc_fastsac_v2,
     "t1_29dof": t1_29dof,
     "t1_29dof_fast_sac": t1_29dof_fast_sac,
     "g1_29dof_wbt": g1_29dof_wbt,
