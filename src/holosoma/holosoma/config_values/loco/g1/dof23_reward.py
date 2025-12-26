@@ -163,6 +163,7 @@ pose_reward = RewardTermCfg(
             tags=["penalty_curriculum"],
         )
 
+'''
 reward_shoulder_gait = RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:reward_shoulder_gait",
             weight=0.2,
@@ -174,6 +175,19 @@ reward_shoulder_gait = RewardTermCfg(
             },
             tags=["penalty_curriculum"],
         )
+'''
+reward_shoulder_gait = RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:penalty_shoulder_gait_signwithlinevel",
+            weight=0.2,
+            params={
+                "swing_range":0.25,
+                "swing_sigma":0.15,
+                "cent_pos":0.15,
+                "shoulde_joint_names": ["left_shoulder_pitch_joint", "right_shoulder_pitch_joint"],
+            },
+            tags=["penalty_curriculum"],
+        )
+
 
 _dict = dataclasses.asdict(g1_23dof_loco_fast_sac)
 pose_dict = dataclasses.asdict(pose_reward)

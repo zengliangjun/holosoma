@@ -100,15 +100,15 @@ def penalty_feet_contact_forces_v1(env, force_threshold: float = 450, max_force:
     _reward = torch.max(_reward, dim=1)[0]
     return _reward
 
-def reward_shoulder_gait(env, \
-                   swing_range: float = 0.3, \
-                   swing_sigma: float = 0.08, \
-                   shoulde_joint_names: list[str] = ["left_shoulder_pitch_joint", "right_shoulder_pitch_joint"],
-                   hip_joint_names: list[str] = ["left_hip_pitch_joint", "right_hip_pitch_joint"]) -> torch.Tensor:
+def reward_shoulder_gait(env,
+    swing_range: float = 0.3,
+    swing_sigma: float = 0.08,
+    shoulde_joint_names: list[str] = ["left_shoulder_pitch_joint", "right_shoulder_pitch_joint"],
+    hip_joint_names: list[str] = ["left_hip_pitch_joint", "right_hip_pitch_joint"]) -> torch.Tensor:
 
     # Calculate expected foot heights based on phase
     gait_state = env.command_manager.get_state("locomotion_gait")
-    swing_target = torch.abs(torch.cos(gait_state.phase) * swing_range)
+    swing_target = torch.abs(torch.cos(gait_state.phase + torch.pi) * swing_range)
 
     shoulde_ids = [env.dof_names.index(name) for name in shoulde_joint_names]
     hip_ids = [env.dof_names.index(name) for name in hip_joint_names]
@@ -130,6 +130,42 @@ def reward_shoulder_gait(env, \
 
     shoulder_pos = qpos[:, shoulde_ids] - default_qpos[:, shoulde_ids]
 
-    error = torch.sum(torch.square(shoulder_pos - swing_target), dim = -1)
+    error = torch.sum(torch.square(shoulder_pos - swing_target), dim=-1)
     return torch.exp(-error / swing_sigma)
 
+
+def penalty_shoulder_gait_signwithlinevel(env,
+    swing_range: float = 0.25,
+    cent_pos: float = 0.15,
+    swing_sigma: float = 0.08,
+    shoulde_joint_names: list[str] = ["left_shoulder_pitch_joint",
+                    "right_shoulder_pitch_joint"]) -> torch.Tensor:
+
+    #
+    shoulde_ids = [env.dof_names.index(name) for name in shoulde_joint_names]
+    #
+    qpos = env.simulator.dof_pos[:, shoulde_ids]
+    default_qpos = env.default_dof_pos[:, shoulde_ids]
+
+    # Calculate expected foot heights based on phase
+    gait_state = env.command_manager.get_state("locomotion_gait")
+
+    command_tensor = getattr(env.manager, "commands", None) if hasattr(env, "manager") else None
+
+    if command_tensor is not None:
+        swing_sign = torch.sign(command_tensor[:, :1])
+        ##
+        swing_target = torch.cos(gait_state.phase + torch.pi) * swing_range * swing_sign + cent_pos
+
+        stand_mask = torch.logical_and(
+            torch.linalg.norm(command_tensor[:, :2], dim=1) < 0.01,
+            torch.abs(command_tensor[:, 2]) < 0.01,
+        )
+        if stand_mask.any():
+            swing_target[stand_mask] = default_qpos[stand_mask]
+    else:
+        swing_target = default_qpos
+
+    error = torch.square(qpos - swing_target)
+    error = torch.sum(error, dim=-1)
+    return torch.exp(-error / swing_sigma)
