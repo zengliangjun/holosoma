@@ -42,18 +42,18 @@ g1_23dof_loco_fast_sac = RewardManagerCfg(
         ),
         "penalty_pose_maxoffset": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:penalty_pose_maxoffset",
-            weight=-5.0,
+            weight=-10.0,
             params={
                 "joint_names": [
                     "left_hip_pitch_joint",
-                    "left_knee_joint",
+                    #"left_knee_joint",
                     "right_hip_pitch_joint",
-                    "right_knee_joint"
+                    #"right_knee_joint"
                 ],
                 "max_offset": [
-                    0.3,
+                    #0.3,
                     0.25,
-                    0.3,
+                    #0.3,
                     0.25,
                 ]
             },
