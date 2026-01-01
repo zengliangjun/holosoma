@@ -69,7 +69,7 @@ g1_curriculum_fast_sac = CurriculumManagerCfg(
 
                 "dr_push_randomizer_state_params": ["max_push_vel"],
                 "dr_push_randomizer_state_max_push_vel_init": [0.3, 0.3],
-                "dr_push_randomizer_state_max_push_vel_final": [4.5, 4.5],
+                "dr_push_randomizer_state_max_push_vel_final": [1.5, 1.5],  # [4.5, 4.5],
 
                 "dr_mass_randomizer_params": ["link_mass_range", "added_mass_range"],
                 "dr_mass_randomizer_link_mass_range_init": [0.95, 1.05],
