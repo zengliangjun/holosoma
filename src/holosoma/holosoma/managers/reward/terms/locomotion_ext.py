@@ -169,3 +169,37 @@ def penalty_shoulder_gait_signwithlinevel(env,
     error = torch.square(qpos - swing_target)
     error = torch.sum(error, dim=-1)
     return torch.exp(-error / swing_sigma)
+
+
+def penalty_knee(env, joint_names: list[str] = [
+        "left_knee_joint",
+        "right_knee_joint"]) -> torch.Tensor:
+
+    #
+    joint_ids = [env.dof_names.index(name) for name in joint_names]
+    #
+    qpos_error = (env.simulator.dof_pos[:, joint_ids]).clone()
+    default_qpos = env.default_dof_pos[:, joint_ids]
+
+    # Calculate expected foot heights based on phase
+    gait_state = env.command_manager.get_state("locomotion_gait")
+    command_tensor = getattr(env.manager, "commands", None) if hasattr(env, "manager") else None
+
+    if command_tensor is not None:
+        ##
+        phase = (gait_state.phase + torch.pi) / (2 * torch.pi)
+        swing_phase = phase > 0.5
+
+        qpos_error[swing_phase] = 0
+
+        stand_mask = torch.logical_and(
+            torch.linalg.norm(command_tensor[:, :2], dim=1) < 0.01,
+            torch.abs(command_tensor[:, 2]) < 0.01,
+        )
+        if stand_mask.any():
+            qpos_error[stand_mask] -= default_qpos[stand_mask]
+    else:
+        qpos_error -= default_qpos
+
+    penalty_error = torch.sum(torch.square(qpos_error), dim=-1)
+    return penalty_error

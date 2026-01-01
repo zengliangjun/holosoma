@@ -12,10 +12,10 @@ from holosoma.config_values import (
 
 from holosoma.config_values.loco.g1 import (
     dof23_curriculum,
-    dof23_command,
+    lyenbot_command,
     dof23_observation,
     dof23_randomization,
-    dof23_reward,
+    lyenbot_reward,
 )
 
 
@@ -32,9 +32,9 @@ lyenbot_loc_fastsac_v2 = ExperimentConfig(
     action=action.g1_29dof_joint_pos,
     termination=termination.g1_29dof_termination,
     randomization=dof23_randomization.g1_randomization,
-    command=dof23_command.g1_command,
+    command=lyenbot_command.lyenbot_command,
     curriculum=dof23_curriculum.g1_curriculum_fast_sac,
-    reward=dof23_reward.g1_23dof_shoulder_gait,
+    reward=lyenbot_reward.lyenbot_loco_fast_sac,
     nightly=NightlyConfig(
         iterations=100000,
         metrics={"Episode/rew_tracking_ang_vel": [0.8, "inf"], "Episode/rew_tracking_lin_vel": [0.95, "inf"]},
