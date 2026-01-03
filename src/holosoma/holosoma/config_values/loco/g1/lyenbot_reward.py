@@ -99,7 +99,7 @@ lyenbot_loco_fast_sac = RewardManagerCfg(
         ),
         "penalty_knee":  RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:penalty_knee",
-            weight=- 0.25,
+            weight=- 0.1,
             params={"joint_names": [
                 "left_knee_pitch_joint",
                 "right_knee_pitch_joint"
@@ -110,12 +110,11 @@ lyenbot_loco_fast_sac = RewardManagerCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:penalty_shoulder_gait_signwithlinevel",
             weight=0.2,
             params={
-                "swing_range":0.25,
+                "swing_range":0.15,
                 "swing_sigma":0.15,
-                "cent_pos":0.15,
+                "cent_pos":0.10,
                 "shoulde_joint_names": ["left_shoulder_pitch_joint", "right_shoulder_pitch_joint"],
-            },
-            tags=["penalty_curriculum"],
+            }
         ),
         "penalty_feet_contact_forces": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:penalty_feet_contact_forces_v1",

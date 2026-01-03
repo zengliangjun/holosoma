@@ -119,7 +119,7 @@ def reward_shoulder_gait(env,
     hip_sign = torch.sign(qpos[:, hip_ids] - default_qpos[:, shoulde_ids]) * -1
     swing_target *= hip_sign
 
-    command_tensor = getattr(env.manager, "commands", None) if hasattr(env, "manager") else None
+    command_tensor = getattr(env.command_manager, "commands", None)
     if command_tensor is not None:
         stand_mask = torch.logical_and(
             torch.linalg.norm(command_tensor[:, :2], dim=1) < 0.01,
@@ -150,7 +150,7 @@ def penalty_shoulder_gait_signwithlinevel(env,
     # Calculate expected foot heights based on phase
     gait_state = env.command_manager.get_state("locomotion_gait")
 
-    command_tensor = getattr(env.manager, "commands", None) if hasattr(env, "manager") else None
+    command_tensor = getattr(env.command_manager, "commands", None)
 
     if command_tensor is not None:
         swing_sign = torch.sign(command_tensor[:, :1])
@@ -183,7 +183,7 @@ def penalty_knee(env, joint_names: list[str] = [
 
     # Calculate expected foot heights based on phase
     gait_state = env.command_manager.get_state("locomotion_gait")
-    command_tensor = getattr(env.manager, "commands", None) if hasattr(env, "manager") else None
+    command_tensor = getattr(env.command_manager, "commands", None)
 
     if command_tensor is not None:
         ##
