@@ -73,7 +73,7 @@
   <compiler angle="radian" />
 
   <asset>
-    <material name="red" rgba="1 0.2 0.2 1" />
+    <material name="gold" rgba="0.828125 0.683594 0.214844 1" />
     <material name="green" rgba="0.2 1 0.2 1" />
     <material name="blue" rgba="0.2 0.2 1 1" />
     <material name="dark" rgba="0.2 0.2 0.2 1" />
@@ -108,6 +108,7 @@
   <worldbody>
     <!-- body name="base_link" pos="0.00000000 0.00000000 0.85" childclass="lyenbot"-->
     <body name="base_link" pos="0.00000000 0.00000000 0.86" childclass="lyenbot">
+      <site name="imu" size="0.01" pos="0.0 0.0 0.0" />
       <inertial pos="0 0 -0.10297767" mass="3.358" diaginertia="0.00881836 0.00929851 0.00623854"/>
       <freejoint name="floating_base" />
       <geom name="base_link_visual" material="dark" type="mesh" mesh="base_link" class="visual" />
@@ -118,7 +119,7 @@
         <inertial pos="-0.01237699 -0.001578 0.00480391" mass="1.159" diaginertia="0.00400032 0.00113104 0.00431382" />
 
         <joint name="left_hip_pitch_joint" class="hip_pitch" />
-        <geom name="left_hip_pitch_link_visual" material="red" type="mesh" mesh="left_hip_pitch_link" class="visual" />
+        <geom name="left_hip_pitch_link_visual" material="gold" type="mesh" mesh="left_hip_pitch_link" class="visual" />
 
         <body name="left_hip_roll_link" pos="0 0.0497 0" quat="0.9940561290055286 0.10886878517988383 0.0 0.0">
           <joint name="left_hip_roll_joint" class="hip_roll" range="-0.314 2.268" />
@@ -153,7 +154,7 @@
                   <geom name="left_foot6_collision" type="capsule" size="0.01" class="collision" fromto="-0.044 0.018 -0.025 0.123 0.018 -0.025"/>
                   <geom name="left_foot7_collision" type="capsule" size="0.01" class="collision" fromto="0.1 0.026 -0.025 0.05 0.026 -0.025"/>
 
-                  <geom name="left_ankle_roll_link_visual" material="red" type="mesh" mesh="left_ankle_roll_link" class="visual" />
+                  <geom name="left_ankle_roll_link_visual" material="gold" type="mesh" mesh="left_ankle_roll_link" class="visual" />
                   <!-- Auxiliary foot contact point for height sampling -->
                   <body name="left_foot_contact_point" pos="0 0 -0.033">
                       <inertial pos="0 0 0" mass="0.001" diaginertia="0.000001 0.000001 0.000001"/>
@@ -167,7 +168,7 @@
       <body name="right_hip_pitch_link" pos="0 -0.067478 -0.12429" quat="0.9940561290055286 0.10886878517988383 0.0 0.0">
         <joint name="right_hip_pitch_joint" class="hip_pitch" />
         <inertial pos="-0.01237699 0.001578 0.00480391" mass="1.159" diaginertia="0.00400032 0.00113104 0.00431382" />
-        <geom name="right_hip_pitch_link_visual" material="red" type="mesh" mesh="right_hip_pitch_link" class="visual" />
+        <geom name="right_hip_pitch_link_visual" material="gold" type="mesh" mesh="right_hip_pitch_link" class="visual" />
 
         <body name="right_hip_roll_link" pos="0 -0.0497 0" quat="0.9940561290055286 -0.10886878517988383 0.0 0.0">
           <joint name="right_hip_roll_joint" class="hip_roll" range="-2.268 0.314" />
@@ -201,7 +202,7 @@
                   <geom name="right_foot6_collision" type="capsule" size="0.008" class="collision" fromto="-0.044 0.018 -0.025 0.123 0.018 -0.025"/>
                   <geom name="right_foot7_collision" type="capsule" size="0.01" class="collision" fromto="0.1 0.026 -0.025 0.05 0.026 -0.025"/>
 
-                  <geom name="right_ankle_roll_link_visual" material="red" type="mesh" mesh="right_ankle_roll_link" class="visual" />
+                  <geom name="right_ankle_roll_link_visual" material="gold" type="mesh" mesh="right_ankle_roll_link" class="visual" />
 
                   <!-- Auxiliary foot contact point for height sampling -->
                   <body name="right_foot_contact_point" pos="0 0 -0.033">
@@ -223,11 +224,12 @@
         <geom name="torso_collision_3" pos="0 0 0.260" quat="-3.673205103346574e-06 0.9999999999932537 0.0 -0.0" type="cylinder" size="0.068 0.005" class="collision" />
         <geom name="torso_visual" material="white" type="mesh" mesh="torso_simple" class="visual" />
 
+        <site name="secondary_imu" size="0.01" pos="-0.03959 -0.00224 0.13792"/>
 
         <body name="left_shoulder_pitch_link" pos="0 0.129 0" >
           <joint name="left_shoulder_pitch_joint" class="shoulder_pitch" />
           <inertial pos="0.0015355 0.0093599 0.00034881" mass="1.053" diaginertia="0.0030465 0.00050939 0.003001" />
-          <geom name="left_shoulder_pitch_link_visual" material="red" type="mesh" mesh="left_shoulder_pitch_link" class="visual" />
+          <geom name="left_shoulder_pitch_link_visual" material="gold" type="mesh" mesh="left_shoulder_pitch_link" class="visual" />
 
 
           <body name="left_shoulder_roll_link" pos="0 0.06145 0" >
@@ -260,7 +262,7 @@
         <body name="right_shoulder_pitch_link" pos="0 -0.129 0" >
           <joint name="right_shoulder_pitch_joint" class="shoulder_pitch" />
           <inertial pos="0.0015355 -0.0093599 0.00034881" mass="1.053" diaginertia="0.0030465 0.00050939 0.003001" />
-          <geom name="right_shoulder_pitch_link_visual" material="red" type="mesh" mesh="right_shoulder_pitch_link" class="visual" />
+          <geom name="right_shoulder_pitch_link_visual" material="gold" type="mesh" mesh="right_shoulder_pitch_link" class="visual" />
 
           <body name="right_shoulder_roll_link" pos="0 -0.06145 0">
             <joint name="right_shoulder_roll_joint" class="shoulder_roll" range="-2.355 0" />
@@ -290,7 +292,6 @@
           </body>
         </body>
       </body>
-      <site name="base_link_site" pos="0 0 0" quat="1 0 0 0" />
       <camera name="front_camera" mode="track" fovy="90.0" quat="4.329780281177467e-17 4.329780281177466e-17 0.7071067811865475 0.7071067811865476" pos="0.0 2.0 0.5" />
       <camera name="side_camera" mode="track" fovy="90.0" quat="-0.5 -0.4999999999999999 0.5 0.5000000000000001" pos="-2.0 0.0 0.5" />
     </body>
@@ -353,10 +354,100 @@
   </contact>
 
   <sensor>
-    <framepos name="base_link_site_pos" objtype="site" objname="base_link_site" />
-    <framequat name="base_link_site_quat" objtype="site" objname="base_link_site" />
-    <framelinvel name="base_link_site_linvel" objtype="site" objname="base_link_site" />
-    <frameangvel name="base_link_site_angvel" objtype="site" objname="base_link_site" />
-    <velocimeter name="base_link_site_vel" site="base_link_site" />
+    <jointpos name="left_hip_pitch_pos" joint="left_hip_pitch_joint" />
+    <jointpos name="left_hip_roll_pos" joint="left_hip_roll_joint" />
+    <jointpos name="left_hip_yaw_pos" joint="left_hip_yaw_joint" />
+    <jointpos name="left_knee_pitch_pos" joint="left_knee_pitch_joint" />
+    <jointpos name="left_ankle_pitch_pos" joint="left_ankle_pitch_joint" />
+    <jointpos name="left_ankle_roll_pos" joint="left_ankle_roll_joint" />
+
+    <jointpos name="right_hip_pitch_pos" joint="right_hip_pitch_joint" />
+    <jointpos name="right_hip_roll_pos" joint="right_hip_roll_joint" />
+    <jointpos name="right_hip_yaw_pos" joint="right_hip_yaw_joint" />
+    <jointpos name="right_knee_pitch_pos" joint="right_knee_pitch_joint" />
+    <jointpos name="right_ankle_pitch_pos" joint="right_ankle_pitch_joint" />
+    <jointpos name="right_ankle_roll_pos" joint="right_ankle_roll_joint" />
+
+    <jointpos name="waist_yaw_pos" joint="waist_yaw_joint" />
+
+    <jointpos name="left_shoulder_pitch_pos" joint="left_shoulder_pitch_joint" />
+    <jointpos name="left_shoulder_roll_pos" joint="left_shoulder_roll_joint" />
+    <jointpos name="left_elbow_yaw_pos" joint="left_elbow_yaw_joint" />
+    <jointpos name="left_elbow_pitch_pos" joint="left_elbow_pitch_joint" />
+    <jointpos name="left_elbow_roll_pos" joint="left_elbow_roll_joint" />
+
+    <jointpos name="right_shoulder_pitch_pos" joint="right_shoulder_pitch_joint" />
+    <jointpos name="right_shoulder_roll_pos" joint="right_shoulder_roll_joint" />
+    <jointpos name="right_elbow_yaw_pos" joint="right_elbow_yaw_joint" />
+    <jointpos name="right_elbow_pitch_pos" joint="right_elbow_pitch_joint" />
+    <jointpos name="right_elbow_roll_pos" joint="right_elbow_roll_joint" />
+
+
+    <jointvel name="left_hip_pitch_vel" joint="left_hip_pitch_joint" />
+    <jointvel name="left_hip_roll_vel" joint="left_hip_roll_joint" />
+    <jointvel name="left_hip_yaw_vel" joint="left_hip_yaw_joint" />
+    <jointvel name="left_knee_pitch_vel" joint="left_knee_pitch_joint" />
+    <jointvel name="left_ankle_pitch_vel" joint="left_ankle_pitch_joint" />
+    <jointvel name="left_ankle_roll_vel" joint="left_ankle_roll_joint" />
+
+    <jointvel name="right_hip_pitch_vel" joint="right_hip_pitch_joint" />
+    <jointvel name="right_hip_roll_vel" joint="right_hip_roll_joint" />
+    <jointvel name="right_hip_yaw_vel" joint="right_hip_yaw_joint" />
+    <jointvel name="right_knee_pitch_vel" joint="right_knee_pitch_joint" />
+    <jointvel name="right_ankle_pitch_vel" joint="right_ankle_pitch_joint" />
+    <jointvel name="right_ankle_roll_vel" joint="right_ankle_roll_joint" />
+
+    <jointvel name="waist_yaw_vel" joint="waist_yaw_joint" />
+
+    <jointvel name="left_shoulder_pitch_vel" joint="left_shoulder_pitch_joint" />
+    <jointvel name="left_shoulder_roll_vel" joint="left_shoulder_roll_joint" />
+    <jointvel name="left_elbow_yaw_vel" joint="left_elbow_yaw_joint" />
+    <jointvel name="left_elbow_pitch_vel" joint="left_elbow_pitch_joint" />
+    <jointvel name="left_elbow_roll_vel" joint="left_elbow_roll_joint" />
+
+    <jointvel name="right_shoulder_pitch_vel" joint="right_shoulder_pitch_joint" />
+    <jointvel name="right_shoulder_roll_vel" joint="right_shoulder_roll_joint" />
+    <jointvel name="right_elbow_yaw_vel" joint="right_elbow_yaw_joint" />
+    <jointvel name="right_elbow_pitch_vel" joint="right_elbow_pitch_joint" />
+    <jointvel name="right_elbow_roll_vel" joint="right_elbow_roll_joint" />
+
+    <jointactuatorfrc name="left_hip_pitch_torque" joint="left_hip_pitch_joint" />
+    <jointactuatorfrc name="left_hip_roll_torque" joint="left_hip_roll_joint" />
+    <jointactuatorfrc name="left_hip_yaw_torque" joint="left_hip_yaw_joint" />
+    <jointactuatorfrc name="left_knee_pitch_torque" joint="left_knee_pitch_joint" />
+    <jointactuatorfrc name="left_ankle_pitch_torque" joint="left_ankle_pitch_joint" />
+    <jointactuatorfrc name="left_ankle_roll_torque" joint="left_ankle_roll_joint" />
+
+    <jointactuatorfrc name="right_hip_pitch_torque" joint="right_hip_pitch_joint" />
+    <jointactuatorfrc name="right_hip_roll_torque" joint="right_hip_roll_joint" />
+    <jointactuatorfrc name="right_hip_yaw_torque" joint="right_hip_yaw_joint" />
+    <jointactuatorfrc name="right_knee_pitch_torque" joint="right_knee_pitch_joint" />
+    <jointactuatorfrc name="right_ankle_pitch_torque" joint="right_ankle_pitch_joint" />
+    <jointactuatorfrc name="right_ankle_roll_torque" joint="right_ankle_roll_joint" />
+    <jointactuatorfrc name="waist_yaw_torque" joint="waist_yaw_joint" />
+
+    <jointactuatorfrc name="left_shoulder_pitch_torque" joint="left_shoulder_pitch_joint" />
+    <jointactuatorfrc name="left_shoulder_roll_torque" joint="left_shoulder_roll_joint" />
+    <jointactuatorfrc name="left_elbow_yaw_torque" joint="left_elbow_yaw_joint" />
+    <jointactuatorfrc name="left_elbow_pitch_torque" joint="left_elbow_pitch_joint" />
+    <jointactuatorfrc name="left_elbow_roll_torque" joint="left_elbow_roll_joint" />
+
+    <jointactuatorfrc name="right_shoulder_pitch_torque" joint="right_shoulder_pitch_joint" />
+    <jointactuatorfrc name="right_shoulder_roll_torque" joint="right_shoulder_roll_joint" />
+    <jointactuatorfrc name="right_elbow_yaw_torque" joint="right_elbow_yaw_joint" />
+    <jointactuatorfrc name="right_elbow_pitch_torque" joint="right_elbow_pitch_joint" />
+    <jointactuatorfrc name="right_elbow_roll_torque" joint="right_elbow_roll_joint" />
+
+    <framequat name="imu_quat" objtype="site" objname="imu" />
+    <gyro name="imu_gyro" site="imu" />
+    <accelerometer name="imu_acc" site="imu" />
+
+    <framepos name="frame_pos" objtype="site" objname="imu" />
+    <framelinvel name="frame_vel" objtype="site" objname="imu" />
+
+    <framequat name="secondary_imu_quat" objtype="site" objname="secondary_imu" />
+    <gyro name="secondary_imu_gyro" site="secondary_imu" noise="5e-4" cutoff="34.9"/>
+    <accelerometer name="secondary_imu_acc" site="secondary_imu" noise="1e-2" cutoff="157"/>
+
   </sensor>
 </mujoco>
