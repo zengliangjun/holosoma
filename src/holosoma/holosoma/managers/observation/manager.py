@@ -138,8 +138,12 @@ class ObservationManager:
         if group_cfg.concatenate:
             # Concatenate in alphabetically sorted order (to match direct system behavior)
             # Direct system does: sorted(obs_config) before concatenation
-            sorted_keys = sorted(obs_tensors.keys())
-            return torch.cat([obs_tensors[key] for key in sorted_keys], dim=-1)
+            if group_cfg.sorted_key:
+                sorted_keys = sorted(obs_tensors.keys())
+                return torch.cat([obs_tensors[key] for key in sorted_keys], dim=-1)
+            else:
+                return torch.cat([tensor for key, tensor in obs_tensors.items()], dim=-1)
+
         return obs_tensors
 
     def _compute_term(self, group_name: str, term_name: str, term_cfg: ObsTermCfg) -> torch.Tensor:

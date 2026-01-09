@@ -5,6 +5,7 @@ from holosoma.config_types.observation import ObservationManagerCfg, ObsGroupCfg
 lyenbot_loco = ObservationManagerCfg(
     groups={
         "actor_obs": ObsGroupCfg(
+            sorted_key=False,
             concatenate=True,
             enable_noise=True,
             history_length=5,

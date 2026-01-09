@@ -38,6 +38,8 @@ class ObsGroupCfg:
     concatenate: bool = True
     """Whether to concatenate term outputs into a single tensor."""
 
+    sorted_key: bool = True
+
     enable_noise: bool = False
     """If ``True``, apply each term's noise setting before scaling."""
 
