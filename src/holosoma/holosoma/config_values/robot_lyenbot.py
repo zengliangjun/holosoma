@@ -95,7 +95,7 @@ lyenbot_23dof = RobotConfig(
     has_upper_body_dof=True,
     left_ankle_dof_names=["left_ankle_pitch_joint", "left_ankle_roll_joint"],
     right_ankle_dof_names=["right_ankle_pitch_joint", "right_ankle_roll_joint"],
-    knee_dof_names=["left_knee_pitch_joint", "right_ankle_roll_joint"],
+    knee_dof_names=["left_knee_pitch_joint", "right_knee_pitch_joint"],
     hips_dof_names=[
         "left_hip_pitch_joint",
         "left_hip_roll_joint",
@@ -477,34 +477,32 @@ lyenbot_23dof = RobotConfig(
             "hip_roll": 99.098427777,  # STIFFNESS_7520_22
             "hip_pitch": 40.179238471,  # STIFFNESS_7520_14
             "knee": 99.098427777,  # STIFFNESS_7520_22
-            "ankle_pitch": 28.501246196,  # 2*STIFFNESS_5020
-            "ankle_roll": 28.501246196,  # 2*STIFFNESS_5020
+            "ankle_pitch": 14.250623098,  # 2*STIFFNESS_5020
+            "ankle_roll": 14.250623098,  # 2*STIFFNESS_5020
             "waist_yaw": 40.179238471,  # STIFFNESS_7520_14
             # "waist_roll": 28.501246196,  # 2*STIFFNESS_5020
             # "waist_pitch": 28.501246196,  # 2*STIFFNESS_5020
             "shoulder_pitch": 14.250623098,  # STIFFNESS_5020
             "shoulder_roll": 14.250623098,  # STIFFNESS_5020
-            "shoulder_yaw": 14.250623098,  # STIFFNESS_5020
-            "elbow": 14.250623098,  # STIFFNESS_5020
-            "wrist_roll": 14.250623098,  # STIFFNESS_5020
-            # "wrist_pitch": 16.778327481,  # STIFFNESS_4010
-            # "wrist_yaw": 16.778327481,  # STIFFNESS_4010
+            "elbow_yaw": 14.250623098,  # STIFFNESS_4010
+            "elbow_pitch": 14.250623098,  # STIFFNESS_4010
+            "elbow_roll": 7.625311549,  # STIFFNESS_5020
         },
         damping={
             "hip_yaw": 2.557889765,  # DAMPING_7520_14
             "hip_roll": 6.308801854,  # DAMPING_7520_22
             "hip_pitch": 2.557889765,  # DAMPING_7520_14
             "knee": 6.308801854,  # DAMPING_7520_22
-            "ankle_pitch": 1.814445687,  # 2*DAMPING_5020
-            "ankle_roll": 1.814445687,  # 2*DAMPING_5020
+            "ankle_pitch": 0.907222843,  # 2*DAMPING_5020
+            "ankle_roll": 0.907222843,  # 2*DAMPING_5020
             "waist_yaw": 2.557889765,  # DAMPING_7520_14
             # "waist_roll": 1.814445687,  # 2*DAMPING_5020
             # "waist_pitch": 1.814445687,  # 2*DAMPING_5020
             "shoulder_pitch": 0.907222843,  # DAMPING_5020
             "shoulder_roll": 0.907222843,  # DAMPING_5020
-            "shoulder_yaw": 0.907222843,  # DAMPING_5020
-            "elbow": 0.907222843,  # DAMPING_5020
-            "wrist_roll": 0.907222843,  # DAMPING_5020
+            "elbow_yaw": 0.907222843,  # DAMPING_5020
+            "elbow_pitch": 0.907222843,  # DAMPING_5020
+            "elbow_roll": 0.907222843,  # DAMPING_5020
             # "wrist_pitch": 1.068141502,  # DAMPING_4010
             # "wrist_yaw": 1.068141502,  # DAMPING_4010
         },

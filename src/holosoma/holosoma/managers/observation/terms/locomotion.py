@@ -143,6 +143,18 @@ def command_ang_vel(env: LeggedRobotLocomotionManager) -> torch.Tensor:
     return env.command_manager.commands[:, 2:3]
 
 
+def command(env: LeggedRobotLocomotionManager) -> torch.Tensor:
+    """Commanded angular velocity (yaw).
+
+    Returns:
+        Tensor of shape [num_envs, 1]
+
+    Equivalent to:
+        env.command_manager.commands[:, 2:3]
+    """
+    return env.command_manager.commands
+
+
 def sin_phase(env: LeggedRobotLocomotionManager) -> torch.Tensor:
     """Sine of the gait phase.
 
