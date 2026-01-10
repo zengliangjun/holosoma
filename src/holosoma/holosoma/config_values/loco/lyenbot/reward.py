@@ -24,6 +24,12 @@ lyenbot_loco_fast_sac_v1 = RewardManagerCfg(
             params={},
             tags=["penalty_curriculum"],
         ),
+        "penalty_linear_vel_z": RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion:penalty_linear_vel_z",
+            weight=-1.0,
+            params={},
+            tags=["penalty_curriculum"],
+        ),
         "penalty_orientation": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion:penalty_orientation",
             weight=-10.0,
@@ -32,18 +38,37 @@ lyenbot_loco_fast_sac_v1 = RewardManagerCfg(
         ),
         "penalty_action_rate": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion:penalty_action_rate",
-            weight=-2.0,
+            weight=-0.25,
             params={},
+            tags=["penalty_curriculum"],
+        ),
+        "penalty_joint_vel": RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:penalty_joint_vel",
+            weight=-0.25,
+            params={},
+            tags=["penalty_curriculum"],
+        ),
+        "base_height": RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:base_height",
+            weight=-10,
+            params={
+                "desired_base_height": 0.81
+            },
             tags=["penalty_curriculum"],
         ),
         "feet_phase": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion:feet_phase",
-            weight=5.0,
+            weight=3.0,
             params={"swing_height": 0.09, "tracking_sigma": 0.008},
+        ),
+        "phase": RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:phase",
+            weight=3.0,
+            params={"threshold": 0.5},
         ),
         "penalty_pose_maxoffset": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:penalty_pose_maxoffset",
-            weight=-10.0,
+            weight=-0.5,
             params={
                 "joint_names": [
                     "left_hip_pitch_joint",
@@ -66,28 +91,28 @@ lyenbot_loco_fast_sac_v1 = RewardManagerCfg(
             params={
                 "pose_weights": [
                     0.01,
-                    1.0,
-                    5.0,
+                    25.0,  # 1.0,  hip_roll
+                    50.0,  # 5.0,  hip_yaw
                     0.01,
-                    5.0,
-                    5.0,
+                    5.0,   # ankle_pitch
+                    50.0,  # 5.0, ankle_roll
                     0.01,
-                    1.0,
-                    5.0,
+                    25.0,  # 1.0,  hip_roll
+                    50.0,  # 5.0,  hip_yaw
                     0.01,
-                    5.0,
-                    5.0,
+                    5.0,   # ankle_pitch
+                    50.0,  # 5.0, ankle_roll
                     50.0,
                     # 50.0,  13
                     # 50.0,  14
-                    5.0,  # 50.0,
+                    35.0,  # 50.0,
                     50.0,
                     50.0,
                     50.0,
                     50.0,
                     # 50.0, 20
                     # 50.0, 21
-                    5.0,  # 50.0,
+                    35.0,  # 50.0,
                     50.0,
                     50.0,
                     50.0,
@@ -100,7 +125,7 @@ lyenbot_loco_fast_sac_v1 = RewardManagerCfg(
         ),
         "penalty_feet_contact_forces": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion_ext:penalty_feet_contact_forces_v1",
-            weight=-0.005,
+            weight=-1e-3,
             params={"force_threshold": 500,
                     "max_force": 800},
             tags=["penalty_curriculum"],
@@ -108,7 +133,7 @@ lyenbot_loco_fast_sac_v1 = RewardManagerCfg(
         "penalty_close_feet_xy": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion:penalty_close_feet_xy",
             weight=-10.0,
-            params={"close_feet_threshold": 0.15},
+            params={"close_feet_threshold": 0.13},
             tags=["penalty_curriculum"],
         ),
         "penalty_feet_ori": RewardTermCfg(

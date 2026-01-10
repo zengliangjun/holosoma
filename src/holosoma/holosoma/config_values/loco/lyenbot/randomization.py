@@ -30,7 +30,7 @@ lyenbot_randomization = RandomizationManagerCfg(
             func="holosoma.managers.randomization.terms.locomotion:setup_dof_pos_bias",
             params={
                 "dof_pos_bias_range": [-0.01, 0.01],
-                "enabled": True,
+                "enabled": False,
             },
         ),
         "actuator_randomizer_state": RandomizationTermCfg(

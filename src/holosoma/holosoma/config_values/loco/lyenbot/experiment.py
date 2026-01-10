@@ -10,14 +10,11 @@ from holosoma.config_values import (
     terrain,
 )
 
-from holosoma.config_values.loco.g1 import (
-    dof23_curriculum,
-)
-
 from holosoma.config_values.loco.lyenbot import (
     command,
     observation,
     randomization,
+    curriculum,
     reward
 )
 
@@ -35,7 +32,7 @@ lyenbotloc_fastsac_v1 = ExperimentConfig(
     termination=termination.g1_29dof_termination,
     randomization=randomization.lyenbot_randomization,
     command=command.lyenbot_command,
-    curriculum=dof23_curriculum.g1_curriculum_fast_sac,
+    curriculum=curriculum.lyenbot_curriculum_fast_sac,
     reward=reward.lyenbot_loco_fast_sac_v1,
     nightly=NightlyConfig(
         iterations=50000,

@@ -20,8 +20,13 @@ lyenbot_loco = ObservationManagerCfg(
                     scale=1.0,
                     noise=0.05,
                 ),
-                "command": ObsTermCfg(
-                    func="holosoma.managers.observation.terms.locomotion:command",
+                "command_lin_vel": ObsTermCfg(
+                    func="holosoma.managers.observation.terms.locomotion:command_lin_vel",
+                    scale=1.0,
+                    noise=0.0,
+                ),
+                "command_ang_vel": ObsTermCfg(
+                    func="holosoma.managers.observation.terms.locomotion:command_ang_vel",
                     scale=1.0,
                     noise=0.0,
                 ),

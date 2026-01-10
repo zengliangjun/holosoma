@@ -188,6 +188,19 @@ def penalty_ang_vel_xy(env) -> torch.Tensor:
     return torch.sum(torch.square(ang_vel[:, :2]), dim=1)
 
 
+def penalty_linear_vel_z(env) -> torch.Tensor:
+    """Penalize z axes base linear velocity.
+
+    Args:
+        env: The environment instance
+
+    Returns:
+        Reward tensor [num_envs]
+    """
+    linear_vel = get_base_lin_vel(env)
+    return torch.square(linear_vel[:, 2])
+
+
 def penalty_close_feet_xy(env, close_feet_threshold: float = 0.05) -> torch.Tensor:
     """Penalize when feet are too close together in xy plane.
 

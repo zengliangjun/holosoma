@@ -7,6 +7,12 @@ from holosoma.utils.safe_torch_import import torch
 if TYPE_CHECKING:
     from holosoma.envs.locomotion.locomotion_manager import LeggedRobotLocomotionManager
 
+
+def penalty_joint_vel(env: LeggedRobotLocomotionManager) -> torch.Tensor:
+    dof_vel = env.simulator.dof_vel
+    return torch.sum(torch.square(dof_vel), dim=1)
+
+
 def penalty_pose_maxoffset(
     env: LeggedRobotLocomotionManager,
     joint_names: list[str],
@@ -23,6 +29,7 @@ def penalty_pose_maxoffset(
     offset_error = torch.square(offset_error)
 
     return torch.sum(offset_error, dim=1)
+
 
 def pose(
     env: LeggedRobotLocomotionManager,
@@ -99,6 +106,49 @@ def penalty_feet_contact_forces_v1(env, force_threshold: float = 450, max_force:
     _reward = torch.clamp(forces - force_threshold, min=0, max=max_force)
     _reward = torch.max(_reward, dim=1)[0]
     return _reward
+
+
+def base_height(
+    env, desired_base_height: float = 0.89,
+    stance_phase_min: float = 0.05,
+    stance_phase_max: float = 0.45,
+) -> torch.Tensor:
+    """Penalize base height away from target.
+
+    Args:
+        env: The environment instance
+        desired_base_height: Target base height
+        zero_vel_penalty_scale: Multiplier for base height penalty when robot has zero velocity commands
+        stance_penalty_scale: Multiplier for base height penalty when robot is in stance mode
+
+    Returns:
+        Reward tensor [num_envs]
+    """
+    gait_state = env.command_manager.get_state("locomotion_gait")
+    phase = (gait_state.phase + torch.pi) / (2 * torch.pi)
+
+    swing = torch.logical_and(phase < stance_phase_min, phase > stance_phase_max)
+
+    command_tensor = getattr(env.command_manager, "commands", None)
+    cmd_norm = torch.norm(command_tensor, dim=1, keepdim=True)
+    walking = cmd_norm > 0.1
+    walking = torch.cat((walking, walking), dim=-1)
+
+    swing = torch.logical_and(swing, walking)
+
+    # base_z = env.terrain_manager.get_state("locomotion_terrain").base_heights
+    # feet_z = env.terrain_manager.get_state("locomotion_terrain").feet_heights
+    base_pos = env.simulator.robot_root_states[:, None, :3]
+    feet_pos = env.simulator._rigid_body_pos[:, env.feet_height_indices, :]
+
+    error_height = torch.norm(base_pos - feet_pos, dim=-1) - desired_base_height
+
+    error_height = torch.clamp(error_height, max=0)
+    error_height[swing] = 0
+    error_height = torch.sum(error_height, dim=-1)
+
+    return torch.square(error_height)
+
 
 def reward_shoulder_gait(env,
     swing_range: float = 0.3,
@@ -203,3 +253,22 @@ def penalty_knee(env, joint_names: list[str] = [
 
     penalty_error = torch.sum(torch.square(qpos_error), dim=-1)
     return penalty_error
+
+
+def phase(env, threshold: float = 0.5) -> torch.Tensor:
+    # Calculate expected foot heights based on phase
+    contact = torch.norm(env.simulator.contact_forces[:, env.feet_indices], dim=-1)
+    is_contact = contact > 1
+
+    gait_state = env.command_manager.get_state("locomotion_gait")
+    phase = (gait_state.phase + torch.pi) / (2 * torch.pi)
+
+    is_stance = phase < threshold
+    reward = ~(is_stance ^ is_contact)
+    reward = torch.sum(reward, dim=-1)
+
+    command_tensor = getattr(env.command_manager, "commands", None)
+    cmd_norm = torch.norm(command_tensor, dim=1)
+    reward *= cmd_norm > 0.1
+
+    return reward

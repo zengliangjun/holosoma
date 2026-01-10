@@ -11,7 +11,7 @@ lyenbot_command = CommandManagerCfg(
             func="holosoma.managers.command.terms.locomotion:LocomotionGait",
             params={
                 "gait_period": 0.8,
-                "randomize_phase": False,
+                "randomize_phase": True,
                 "gait_period_randomization_width": 0.2,
             },
         ),
