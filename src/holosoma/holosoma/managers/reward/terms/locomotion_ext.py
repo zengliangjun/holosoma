@@ -255,20 +255,21 @@ def penalty_knee(env, joint_names: list[str] = [
     return penalty_error
 
 
-def phase(env, threshold: float = 0.5) -> torch.Tensor:
-    # Calculate expected foot heights based on phase
+def feet_gait(env, threshold: float = 0.5) -> torch.Tensor:
+
     contact = torch.norm(env.simulator.contact_forces[:, env.feet_indices], dim=-1)
     is_contact = contact > 1
 
     gait_state = env.command_manager.get_state("locomotion_gait")
     phase = (gait_state.phase + torch.pi) / (2 * torch.pi)
 
-    is_stance = phase < threshold
-    reward = ~(is_stance ^ is_contact)
-    reward = torch.sum(reward, dim=-1)
+    is_stance_phase = phase < threshold
 
     command_tensor = getattr(env.command_manager, "commands", None)
     cmd_norm = torch.norm(command_tensor, dim=1)
-    reward *= cmd_norm > 0.1
+    is_stance_phase[cmd_norm < 0.1] = True
+
+    reward = (is_stance_phase == is_contact).to(torch.float32) - 3 * (is_stance_phase != is_contact).to(torch.float32)
+    reward = torch.sum(reward, dim=-1)
 
     return reward
