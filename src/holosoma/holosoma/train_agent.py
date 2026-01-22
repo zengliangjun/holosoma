@@ -31,6 +31,7 @@ from holosoma.utils.eval_utils import (
 from holosoma.utils.helpers import get_class
 from holosoma.utils.sim_utils import close_simulation_app
 from holosoma.utils.tyro_utils import TYRO_CONIFG
+from holosoma.utils.export_deploy_cfg import export_deploy_cfg
 
 
 class TrainingContext:
@@ -286,6 +287,8 @@ def train(tyro_config: ExperimentConfig, training_context: TrainingContext | Non
         multi_gpu_cfg=distributed_conf,
     )
     algo.setup()
+    export_deploy_cfg(algo=algo, task=env, env_config=tyro_env_config, log_dir=str(experiment_dir))
+
     algo.attach_checkpoint_metadata(tyro_config, wandb_run_path)
     if tyro_config.training.checkpoint is not None:
         loaded_checkpoint = load_checkpoint(tyro_config.training.checkpoint, str(experiment_save_dir))

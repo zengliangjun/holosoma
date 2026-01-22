@@ -969,9 +969,10 @@ class FastSACAgent(BaseAlgo):
             export_policy_as_onnx(
                 wrapper=self.actor_onnx_wrapper,
                 onnx_file_path=onnx_file_path,
-                example_obs_dict={"actor_obs": example_input_list},
+                example_obs_dict={"obs": example_input_list},
             )
 
+        '''
         # Extract control gains and velocity limits & attach to onnx as metadata
         kp_list, kd_list = get_control_gains_from_config(self.env.robot_config)
         cmd_ranges = get_command_ranges_from_env(self.unwrapped_env)
@@ -1000,6 +1001,7 @@ class FastSACAgent(BaseAlgo):
             self.actor.train()
             if self.obs_normalization:
                 self.obs_normalizer.train()
+        '''
 
     def export_jit(self, jit_file_path: str) -> None:
         """Export the `.onnx` of the policy to & save it to `path`.
