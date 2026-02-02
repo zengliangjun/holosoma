@@ -4,8 +4,8 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot name="lyenbot">
 
-  <material name="red">
-    <color rgba="1 0.2 0.2 1"/>
+  <material name="gold">
+    <color rgba="0.828125 0.683594 0.214844 1"/>
   </material>
   <material name="green">
     <color rgba="0.2 1 0.2 1"/>
@@ -57,7 +57,7 @@
       <geometry>
         <mesh filename="meshes/left_hip_pitch_link.STL" />
       </geometry>
-      <material name="red"/>
+      <material name="gold"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -192,7 +192,7 @@
       <geometry>
         <mesh filename="meshes/left_ankle_roll_link.STL" />
       </geometry>
-      <material name="red"/>
+      <material name="gold"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -219,7 +219,7 @@
       <geometry>
         <mesh filename="meshes/right_hip_pitch_link.STL" />
       </geometry>
-      <material name="red"/>
+      <material name="gold"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -354,7 +354,7 @@
       <geometry>
         <mesh filename="meshes/right_ankle_roll_link.STL" />
       </geometry>
-      <material name="red"/>
+      <material name="gold"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -411,7 +411,7 @@
       <geometry>
         <mesh filename="meshes/left_shoulder_pitch_link.STL" />
       </geometry>
-      <material name="red"/>
+      <material name="gold"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -546,7 +546,7 @@
       <geometry>
         <mesh filename="meshes/right_shoulder_pitch_link.STL" />
       </geometry>
-      <material name="red"/>
+      <material name="gold"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
