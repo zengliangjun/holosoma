@@ -174,6 +174,18 @@ lyenbotlegs_loco_fast_sac_v1 = RewardManagerCfg(
             params={},
             tags=["penalty_curriculum"],
         ),
+        "penalty_ankle_rate": RewardTermCfg(
+            func="holosoma.managers.reward.terms.locomotion_ext:penalty_action_rate2",
+            weight=-10.0,
+            params={
+                "joint_names": [
+                    "left_ankle_pitch_joint",
+                    "right_ankle_pitch_joint",
+                    "left_ankle_roll_joint",
+                    "right_ankle_roll_joint",
+                ]},
+            tags=["penalty_curriculum"],
+        ),
         "penalty_action_rate": RewardTermCfg(
             func="holosoma.managers.reward.terms.locomotion:penalty_action_rate",
             weight=-2.0,

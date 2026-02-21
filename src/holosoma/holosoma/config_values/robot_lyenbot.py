@@ -110,15 +110,15 @@ lyenbot_23dof = RobotConfig(
         -0.314,  # hip_roll_joint
         -2.617,  # hip_yaw_joint
         0.0,     # knee_pitch_joint
-        -0.611,  # ankle_pitch_joint
-        -0.314,  # ankle_roll_joint
+        -0.534,   #  -0.611,  # ankle_pitch_joint
+        -0.1326,  # -0.314,  # ankle_roll_joint
 
         -2.617,
         -2.268,
         -2.617,
         0.0,
-        -0.611,
-        -0.314,
+        -0.534,   #  -0.611,
+        -0.1326,  # -0.314,
 
         -2.617,  # waist_yaw_joint
 
@@ -140,15 +140,15 @@ lyenbot_23dof = RobotConfig(
         2.268,  # hip_roll_joint
         2.617,  # hip_yaw_joint
         2.477,  # knee_pitch_joint
-        0.611,  # ankle_pitch_joint
-        0.314,  # ankle_roll_joint
+        0.534,  # 0.611,  # ankle_pitch_joint
+        0.1326,   #  0.314,  # ankle_roll_joint
 
         2.617,
         0.314,
         2.617,
         2.477,
-        0.611,
-        0.314,
+        0.534,  # 0.611,
+        0.1326,  #  0.314,
 
         2.617,  # waist_yaw_joint
 
@@ -522,9 +522,9 @@ lyenbot_23dof = RobotConfig(
         max_linear_velocity=1000.0,
         angular_damping=0.0,
         linear_damping=0.0,
-        urdf_file="lyenbot/lyenbot_20151206_collision.urdf",
+        urdf_file="lyenbot/lyenbot_20260212_collision_ankle_roll_pitch.urdf",
         usd_file=None,
-        xml_file="lyenbot/lyenbot_20151206_collision.xml",
+        xml_file="lyenbot/lyenbot_20260212_collision_ankle_roll_pitch.xml",
         robot_type="lyenbot",
         enable_self_collisions=False,
         default_dof_drive_mode=3,

@@ -195,7 +195,7 @@
     <parent link="left_knee_pitch_link" />
     <child link="left_ankle_pitch_link" />
     <axis xyz="0 1 0" />
-    <limit lower="-0.611" upper="0.611" effort="66" velocity="16.22" />
+    <limit lower="-0.534" upper="0.534" effort="66" velocity="16.22" />
   </joint>
   <link name="left_ankle_roll_link">
     <inertial>
@@ -264,7 +264,7 @@
     <parent link="left_ankle_pitch_link" />
     <child link="left_ankle_roll_link" />
     <axis xyz="1 0 0" />
-    <limit lower="-0.314" upper="0.314" effort="33" velocity="16.22" />
+    <limit lower="-0.1326" upper="0.1326" effort="33" velocity="16.22" />
   </joint>
   <link name="left_foot_contact_point">
       <inertial>
@@ -422,7 +422,7 @@
     <parent link="right_knee_pitch_link" />
     <child link="right_ankle_pitch_link" />
     <axis xyz="0 1 0" />
-    <limit lower="-0.611" upper="0.611" effort="66" velocity="16.22" />
+    <limit lower="-0.534" upper="0.534" effort="66" velocity="16.22" />
   </joint>
   <link name="right_ankle_roll_link">
     <inertial>
@@ -492,7 +492,7 @@
     <parent link="right_ankle_pitch_link" />
     <child link="right_ankle_roll_link" />
     <axis xyz="1 0 0" />
-    <limit lower="-0.314" upper="0.314" effort="33" velocity="16.22" />
+    <limit lower="-0.1326" upper="0.1326" effort="33" velocity="16.22" />
   </joint>
   <link name="right_foot_contact_point">
       <inertial>

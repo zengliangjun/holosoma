@@ -92,12 +92,21 @@ class LocomotionCommand(CommandTermBase):
             (env_ids.shape[0], 1),
             device=device,
         ).squeeze(1)
-        commands[env_ids, 2] = torch_rand_float(
-            ranges["ang_vel_yaw"][0],
-            ranges["ang_vel_yaw"][1],
-            (env_ids.shape[0], 1),
-            device=device,
-        ).squeeze(1)
+
+        if "ang_vel_yaw" in ranges:
+            commands[env_ids, 2] = torch_rand_float(
+                ranges["ang_vel_yaw"][0],
+                ranges["ang_vel_yaw"][1],
+                (env_ids.shape[0], 1),
+                device=device,
+            ).squeeze(1)
+        else:
+            commands[env_ids, 2] = torch_rand_float(
+                ranges["ang_vel_z"][0],
+                ranges["ang_vel_z"][1],
+                (env_ids.shape[0], 1),
+                device=device,
+            ).squeeze(1)
 
         manager = getattr(self, "manager", None)
         if manager is not None:

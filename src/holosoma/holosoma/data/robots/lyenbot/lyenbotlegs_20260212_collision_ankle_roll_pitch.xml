@@ -28,10 +28,10 @@
       </default>
       <default class="ankle">
           <default class="ankle_pitch">
-              <joint axis="0 1 0" range="-0.611 0.611" actuatorfrcrange="-66 66" armature="0.00721945"/>
+              <joint axis="0 1 0" range="-0.534 0.534" actuatorfrcrange="-66 66" armature="0.00721945"/>
           </default>
           <default class="ankle_roll">
-              <joint axis="1 0 0" range="-0.314 0.314" actuatorfrcrange="-33 33" armature="0.00721945"/>
+              <joint axis="1 0 0" range="-0.1326 00.1326" actuatorfrcrange="-33 33" armature="0.00721945"/>
           </default>
       </default>
       <default class="waist_yaw">

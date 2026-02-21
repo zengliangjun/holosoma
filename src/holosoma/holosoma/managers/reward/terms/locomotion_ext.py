@@ -13,6 +13,20 @@ def penalty_joint_vel(env: LeggedRobotLocomotionManager) -> torch.Tensor:
     return torch.sum(torch.square(dof_vel), dim=1)
 
 
+def penalty_action_rate2(
+    env: LeggedRobotLocomotionManager,
+    joint_names: list[str]
+) -> torch.Tensor:
+
+    joint_ids = []
+    for name in joint_names:
+        joint_ids.append(env.dof_names.index(name))
+
+    actions = env.action_manager.action
+    prev_actions = env.action_manager.prev_action
+    return torch.sum(torch.square(prev_actions[:, joint_ids] - actions[:, joint_ids]), dim=1)
+
+
 def penalty_pose_maxoffset(
     env: LeggedRobotLocomotionManager,
     joint_names: list[str],

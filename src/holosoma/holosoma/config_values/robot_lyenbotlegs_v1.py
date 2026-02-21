@@ -285,22 +285,22 @@ lyenbotleg = RobotConfig(
     control=RobotControlConfig(
         control_type="P",
         stiffness={
-            "hip_yaw": 40.179238471,  # STIFFNESS_7520_14
-            "hip_roll": 99.098427777,  # STIFFNESS_7520_22
-            "hip_pitch": 40.179238471,  # STIFFNESS_7520_14
-            "knee": 99.098427777,  # STIFFNESS_7520_22
-            "ankle_pitch": 14.250623098,  # 2*STIFFNESS_5020
-            "ankle_roll": 14.250623098,  # 2*STIFFNESS_5020
-            "waist_yaw": 40.179238471,  # STIFFNESS_7520_14
+            "hip_yaw": 100,  # STIFFNESS_7520_14
+            "hip_roll": 100,  # STIFFNESS_7520_22
+            "hip_pitch": 200,  # STIFFNESS_7520_14
+            "knee": 200,  # STIFFNESS_7520_22
+            "ankle_pitch": 6,  # 2*STIFFNESS_5020
+            "ankle_roll": 6,  # 2*STIFFNESS_5020
+            "waist_yaw": 100,  # STIFFNESS_7520_14
         },
         damping={
-            "hip_yaw": 2.557889765,  # DAMPING_7520_14
-            "hip_roll": 6.308801854,  # DAMPING_7520_22
-            "hip_pitch": 2.557889765,  # DAMPING_7520_14
-            "knee": 6.308801854,  # DAMPING_7520_22
-            "ankle_pitch": 0.907222843,  # 2*DAMPING_5020
-            "ankle_roll": 0.907222843,  # 2*DAMPING_5020
-            "waist_yaw": 2.557889765,  # DAMPING_7520_14
+            "hip_yaw": 5,  # DAMPING_7520_14
+            "hip_roll": 5,  # DAMPING_7520_22
+            "hip_pitch": 10,  # DAMPING_7520_14
+            "knee": 10,  # DAMPING_7520_22
+            "ankle_pitch": 2.65,  # 2*DAMPING_5020
+            "ankle_roll": 2.65,  # 2*DAMPING_5020
+            "waist_yaw": 5,  # DAMPING_7520_14
         },
         action_scale=0.25,  # 0.25 for locomotion, 1.0 for whole body tracking
         action_clip_value=100.0,
