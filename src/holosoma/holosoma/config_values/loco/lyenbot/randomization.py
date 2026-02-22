@@ -36,8 +36,8 @@ lyenbot_randomization = RandomizationManagerCfg(
         "actuator_randomizer_state": RandomizationTermCfg(
             func="holosoma.managers.randomization.terms.locomotion:ActuatorRandomizerState",
             params={
-                "kp_range": [0.8, 1.2],
-                "kd_range": [0.8, 1.2],
+                "kp_range": [0.5, 2.2],
+                "kd_range": [0.5, 2.2],
                 "rfi_lim_range": [0.5, 1.5],
                 "enable_pd_gain": True,
                 "enable_rfi_lim": False,
@@ -47,7 +47,7 @@ lyenbot_randomization = RandomizationManagerCfg(
             func="holosoma.managers.randomization.terms.locomotion:randomize_mass_startup",
             params={
                 "enable_link_mass": True,
-                "link_mass_range": [0.8, 1.3],
+                "link_mass_range": [0.6, 1.6],
                 "enable_base_mass": True,
                 "added_mass_range": [-1.0, 3.0],
             },
@@ -55,7 +55,7 @@ lyenbot_randomization = RandomizationManagerCfg(
         "randomize_friction_startup": RandomizationTermCfg(
             func="holosoma.managers.randomization.terms.locomotion:randomize_friction_startup",
             params={
-                "friction_range": [0.5, 1.25],
+                "friction_range": [0.5, 1.5],
                 "enabled": True,
             },
         ),
@@ -91,16 +91,6 @@ lyenbot_randomization = RandomizationManagerCfg(
         ),
         "configure_torque_rfi": RandomizationTermCfg(
             func="holosoma.managers.randomization.terms.locomotion:configure_torque_rfi",
-        ),
-        "actuator_randomizer_state": RandomizationTermCfg(
-            func="holosoma.managers.randomization.terms.locomotion:ActuatorRandomizerState",
-            params={
-                "kp_range": [0.8, 1.2],
-                "kd_range": [0.8, 1.2],
-                "rfi_lim_range": [0.5, 1.5],
-                "enable_pd_gain": True,
-                "enable_rfi_lim": False,
-            },
         ),
     },
     step_terms={
