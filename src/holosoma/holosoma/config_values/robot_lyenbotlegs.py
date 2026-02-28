@@ -78,14 +78,14 @@ lyenbotleg = RobotConfig(
         -2.617,  # hip_pitch_joint
         -0.314,  # hip_roll_joint
         -2.617,  # hip_yaw_joint
-        0.0,     # knee_pitch_joint
+        0.087267,  # 0.0,     # knee_pitch_joint
         -0.534,  # -0.611,  # ankle_pitch_joint
         -0.1326,  # -0.314,  # ankle_roll_joint
 
         -2.617,
         -2.268,
         -2.617,
-        0.0,
+        0.087267,  # 0.0,
         -0.534,  # -0.611,
         -0.1326,  # -0.314,
 
@@ -285,22 +285,22 @@ lyenbotleg = RobotConfig(
     control=RobotControlConfig(
         control_type="P",
         stiffness={
-            "hip_yaw": 40.179238471,  # STIFFNESS_7520_14
-            "hip_roll": 99.098427777,  # STIFFNESS_7520_22
-            "hip_pitch": 40.179238471,  # STIFFNESS_7520_14
-            "knee": 99.098427777,  # STIFFNESS_7520_22
-            "ankle_pitch": 14.250623098,  # 2*STIFFNESS_5020
-            "ankle_roll": 14.250623098,  # 2*STIFFNESS_5020
-            "waist_yaw": 40.179238471,  # STIFFNESS_7520_14
+            "hip_yaw": 60,  # 40.179238471,  # STIFFNESS_7520_14
+            "hip_roll": 60,  # 99.098427777,  # STIFFNESS_7520_22
+            "hip_pitch": 80,  # 40.179238471,  # STIFFNESS_7520_14
+            "knee": 80,  # 99.098427777,  # STIFFNESS_7520_22
+            "ankle_pitch": 14,  # 2*STIFFNESS_5020
+            "ankle_roll": 14,  # 2*STIFFNESS_5020
+            "waist_yaw": 60,  # 40.179238471,  # STIFFNESS_7520_14
         },
         damping={
-            "hip_yaw": 2.557889765,  # DAMPING_7520_14
-            "hip_roll": 6.308801854,  # DAMPING_7520_22
-            "hip_pitch": 2.557889765,  # DAMPING_7520_14
-            "knee": 6.308801854,  # DAMPING_7520_22
-            "ankle_pitch": 0.907222843,  # 2*DAMPING_5020
-            "ankle_roll": 0.907222843,  # 2*DAMPING_5020
-            "waist_yaw": 2.557889765,  # DAMPING_7520_14
+            "hip_yaw": 3,  # 2.557889765,  # DAMPING_7520_14
+            "hip_roll": 3,  # 6.308801854,  # DAMPING_7520_22
+            "hip_pitch": 4,  # 2.557889765,  # DAMPING_7520_14
+            "knee": 4,  # 6.308801854,  # DAMPING_7520_22
+            "ankle_pitch": 0.9,  # 2*DAMPING_5020
+            "ankle_roll": 0.9,  # 2*DAMPING_5020
+            "waist_yaw": 3,  # DAMPING_7520_14
         },
         action_scale=0.25,  # 0.25 for locomotion, 1.0 for whole body tracking
         action_clip_value=100.0,

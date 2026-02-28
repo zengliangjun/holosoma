@@ -50,7 +50,7 @@ lyenbotlegloc_fastsac_v1 = ExperimentConfig(
 
     simulator=simulator.isaacgym,
     robot=robot_lyenbotlegs.lyenbotleg,
-    terrain=terrain.terrain_locomotion_mix_dof23,
+    terrain=terrain.terrain_locomotion_plane,  # terrain.terrain_locomotion_mix_dof23,
     observation=observation.lyenbot_loco,
     action=action.g1_29dof_joint_pos,
     termination=termination.g1_29dof_termination,
