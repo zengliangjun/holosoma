@@ -24,7 +24,7 @@
           </default>
       </default>
       <default class="knee">
-          <joint axis="0 1 0" range="0 2.477" actuatorfrcrange="-140 140" armature="0.025101925"/>
+          <joint axis="0 1 0" range="0.087267 2.477" actuatorfrcrange="-140 140" armature="0.025101925"/>
       </default>
       <default class="ankle">
           <default class="ankle_pitch">
