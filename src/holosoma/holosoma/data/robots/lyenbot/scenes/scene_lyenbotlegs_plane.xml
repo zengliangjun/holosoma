@@ -1,5 +1,5 @@
 <mujoco model="lyenbot scene">
-    <include file="../lyenbotlegs_20151206_collision.xml"/>
+    <include file="../lyenbotlegs-A_E11-260308_collision.xml"/>
     <option timestep="0.002" iterations="50" solver="Newton"/>
     <compiler angle="radian" meshdir="../meshes/"/>
 
