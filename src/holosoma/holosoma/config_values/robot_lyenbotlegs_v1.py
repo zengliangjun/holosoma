@@ -78,14 +78,14 @@ lyenbotleg = RobotConfig(
         -2.617,  # hip_pitch_joint
         -0.314,  # hip_roll_joint
         -2.617,  # hip_yaw_joint
-        0.0,     # knee_pitch_joint
+        0.08726699650287628,     # knee_pitch_joint
         -0.534,  # -0.611,  # ankle_pitch_joint
         -0.1326,  # -0.314,  # ankle_roll_joint
 
         -2.617,
         -2.268,
         -2.617,
-        0.0,
+        0.08726699650287628,
         -0.534,  # -0.611,
         -0.1326,  # -0.314,
 
@@ -130,19 +130,19 @@ lyenbotleg = RobotConfig(
     ],  # right wrist
     dof_effort_limit_list=[
         140,  # 'left_hip_pitch_joint',
-        55,  # 'left_hip_roll_joint',
-        55,  # 'left_hip_yaw_joint',
+        80,  # 'left_hip_roll_joint',
+        80,  # 'left_hip_yaw_joint',
         140,  # 'left_knee_pitch_joint',
-        66,  # 'left_ankle_pitch_joint',
-        33,  # 'left_ankle_roll_joint',
+        48,  # 'left_ankle_pitch_joint',
+        48,  # 'left_ankle_roll_joint',
         140,  # 'right_hip_pitch_joint',
-        55,  # 'right_hip_roll_joint',
-        55,  # 'right_hip_yaw_joint',
+        80,  # 'right_hip_roll_joint',
+        80,  # 'right_hip_yaw_joint',
         140,  # 'right_knee_pitch_joint',
-        66,  # 'right_ankle_pitch_joint',
-        33,  # 'right_ankle_roll_joint',
+        48,  # 'right_ankle_pitch_joint',
+        48,  # 'right_ankle_roll_joint',
 
-        55,  # 'waist_yaw_joint',
+        80,  # 'waist_yaw_joint',
 
     ],  # right wrist
     dof_armature_list=[
@@ -164,19 +164,19 @@ lyenbotleg = RobotConfig(
 
     ],  # right wrist
     dof_joint_friction_list=[
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
     ],
     body_names=[
         "base_link",

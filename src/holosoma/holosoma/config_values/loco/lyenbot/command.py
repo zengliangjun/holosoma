@@ -10,7 +10,7 @@ lyenbot_command = CommandManagerCfg(
         "locomotion_gait": CommandTermCfg(
             func="holosoma.managers.command.terms.locomotion:LocomotionGait",
             params={
-                "gait_period": 0.8,
+                "gait_period": 0.6,
                 "randomize_phase": True,
                 "gait_period_randomization_width": 0.2,
             },
