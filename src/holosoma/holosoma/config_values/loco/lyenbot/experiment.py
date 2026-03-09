@@ -7,6 +7,7 @@ from holosoma.config_values import (
     robot_lyenbot,
     robot_lyenbotlegs,
     robot_lyenbotlegs_v1,
+    robot_lyenbotlegs_v1_40,
     simulator,
     termination,
     terrain,
@@ -50,6 +51,28 @@ lyenbotlegloc_fastsac_v1 = ExperimentConfig(
 
     simulator=simulator.isaacgym,
     robot=robot_lyenbotlegs_v1.lyenbotleg,
+    terrain=terrain.terrain_locomotion_plane,  # terrain.terrain_locomotion_mix_dof23,
+    observation=observation.lyenbot_loco_phase,
+    action=action.g1_29dof_joint_pos,
+    termination=termination.g1_29dof_termination,
+    randomization=randomization.lyenbot_randomization,
+    command=command.lyenbot_command,
+    curriculum=curriculum.lyenbot_curriculum_fast_sac,
+    reward=reward.lyenbotlegs_loco_fast_sac_v1,
+    nightly=NightlyConfig(
+        iterations=100000,
+        metrics={"Episode/rew_tracking_ang_vel": [0.8, "inf"], "Episode/rew_tracking_lin_vel": [0.95, "inf"]},
+    ),
+)
+
+lyenbotlegloc_fastsac35_40_v1 = ExperimentConfig(
+    env_class="holosoma.envs.locomotion.locomotion_manager.LeggedRobotLocomotionManager",
+    training=TrainingConfig(project="lyenbot", name="lyenbotlegloc_loc_fastsac_v1"),
+    algo=replace(algo.fast_sac, config=replace(algo.fast_sac.config,
+            num_learning_iterations=50000, use_symmetry=True)),
+
+    simulator=simulator.isaacgym,
+    robot=robot_lyenbotlegs_v1_40.lyenbotleg,
     terrain=terrain.terrain_locomotion_plane,  # terrain.terrain_locomotion_mix_dof23,
     observation=observation.lyenbot_loco_phase,
     action=action.g1_29dof_joint_pos,

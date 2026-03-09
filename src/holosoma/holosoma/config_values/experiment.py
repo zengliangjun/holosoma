@@ -23,7 +23,8 @@ from holosoma.config_values.loco.g1.dof23_experiment import \
 
 from holosoma.config_values.loco.lyenbot.experiment import \
     lyenbotloc_fastsac_v1,  \
-    lyenbotlegloc_fastsac_v1
+    lyenbotlegloc_fastsac_v1,  \
+    lyenbotlegloc_fastsac35_40_v1
 
 
 from holosoma.config_values.loco.t1.experiment import t1_29dof, \
@@ -55,6 +56,7 @@ DEFAULTS = {
     #  "lyenbot_loc_fastsac_v2": lyenbot_loc_fastsac_v2,
     "lyenbotloc_fastsac_v1": lyenbotloc_fastsac_v1,
     "lyenbotlegloc_fastsac_v1": lyenbotlegloc_fastsac_v1,
+    "lyenbotlegloc_fastsac35_40_v1": lyenbotlegloc_fastsac35_40_v1,
     "t1_29dof": t1_29dof,
     "t1_29dof_fast_sac": t1_29dof_fast_sac,
     "g1_29dof_wbt": g1_29dof_wbt,
